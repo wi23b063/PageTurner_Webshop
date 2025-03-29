@@ -1,4 +1,4 @@
-document.getElementbyId("registerForm").addEventListener("submit", function(event){
+document.getElementbyId("registerForm").addEventListener("submit", function(event){ //Registration Form
     event.preventDefault(); // prevents the submit without reload
 
     let username = $("#username").val();
@@ -39,4 +39,44 @@ document.getElementbyId("registerForm").addEventListener("submit", function(even
 
     .catch(error => console.error("Error:", error));
 
+});
+
+
+document.getElementbyId("loginForm").addEventListener("submit", function(event){ //Login Form
+        event.preventDefault();
+
+        $(".error").text("");
+        $("#error_message").hide();
+
+        let username = $("#username").val().trim();
+        let password = $("#password").val().trim();
+        let isValid = true;
+
+        if (username === "") {
+            $("#username_error").text("Please enter your username.");
+            isValid = false;
+        }
+        if (password === "") {
+            $("#password_error").text("Please enter your password.");
+            isValid = false;
+        }
+
+        if (!isValid) return;
+
+        $.ajax({
+            url: "UserLogin.php",
+            type: "POST",
+            data: { username: username, password: password },
+            dataType: "json",
+            success: function(response) {
+                if (response.success) {
+                    window.location.href = "index.php";
+                } else {
+                    $("#error_message").text(response.message).show();
+                }
+            },
+            error: function() {
+                $("#error_message").text("An error occured.").show();
+            }
+        });
 });

@@ -1,6 +1,8 @@
 <?php
 require_once("inc/dbaccess.php"); //require_once when file inclution critical
 
+header("Content-Type: application/json");
+
 $conn = new mysqli($host, $dbuser, $dbpassword, $database);
 if ($conn->connect_error) {
     die(json_encode(["status" => "error", "message" => "Database connection failed."]));
