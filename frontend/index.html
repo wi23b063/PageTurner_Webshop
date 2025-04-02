@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PageTurner Webshop</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+
+<body>
+  <!-- Navigation -->
+  <header>
+    <div class="nav-container">
+      <nav>
+        <div class="branding">
+            <img src="img/logo.png" alt="PageTurner Logo" class="logo" />
+            <span class="brand-name">PageTurner</span>
+        </div>
+         <ul class="nav-links">
+          <li><a href="#kontakt">Kontakt</a></li>
+          <li><a href="#ueberuns">Über uns</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Finde dein nächstes Lieblingsbuch</h1>
+    <p class="subline">mit PageTurner</p>
+
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Nach Produkten suchen" />
+      <button id="searchBtn" type="button" aria-label="Suchen">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#333" viewBox="0 0 24 24">
+          <path d="M10 2a8 8 0 105.293 14.707l5 5a1 1 0 001.414-1.414l-5-5A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <section id="product-preview">
+    <div id="product-list"></div>
+  </section>
+  
+
+ 
+  
+  <section class="new-books">
+    <h2>Unsere neuesten Produkte</h2>
+    <div id="newest-books"></div>
+  </section>
+  
+  <script src="newestProducts.js" ></script>
+  <script src="script.js" defer></script>
+
+  <footer>
+    <p>© 2025 PageTurner</p>
+    <a href="#">Impressum</a> | <a href="#">Datenschutz</a>
+  </footer>
+</body>
+</html>
+
+
