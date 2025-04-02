@@ -1,0 +1,251 @@
+body {
+    margin: 0;
+    font-family: 'Georgia', serif;
+    background-color: #4e391e;
+    color: #2c2c2c;
+  }
+
+  header {
+    background-color: #d2a036;
+    padding: 0;
+    max-height: 50px;
+  }
+
+  .nav-container {
+    width: 100%;
+    padding: 0 20px;
+  }
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .branding {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-name {
+    font-family: 'Georgia', serif;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #000000;
+    font-style: italic;
+  }
+
+  .logo {
+    height: 30px;
+    width: auto;
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav a {
+    text-decoration: none;
+    color: #000000;
+    font-weight: bold;
+  }
+
+  .hero {
+    background: url('img/hero.png') no-repeat center center/cover;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+  }
+
+  .hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+
+  .subline {
+    font-style: italic;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: -10px;
+    margin-bottom: 20px;
+  }
+
+  .search-bar {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    background-color: #f3f3f3;
+    border-radius: 999px;
+    overflow: hidden;
+    max-width: 400px;
+    margin: 0 auto;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  }
+
+  .search-bar input {
+    flex: 1;
+    border: none;
+    padding: 12px 16px;
+    font-size: 1rem;
+    background: transparent;
+    outline: none;
+    font-family: 'Georgia', serif;
+    color: #333;
+  }
+
+  .search-bar button {
+    background-color: #ece5da;
+    cursor: pointer; /* sorgt für Mauszeiger beim Hover */
+    z-index: 2;
+    position: relative;
+    color: #333;
+    border: none;
+    padding: 0 18px;
+    font-size: 1.2rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+    transition: background 0.3s ease;
+  }
+
+  .search-bar button svg {
+    width: 20px;
+    height: 20px;
+    fill: #333;
+  }
+
+  .new-books {
+    padding: 40px;
+    background-color: #fdfaf6;
+    text-align: center;
+  }
+
+  #newest-books {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  
+
+  footer {
+    background-color: #222;
+    color: white;
+    text-align: center;
+    padding: 20px;
+  }
+
+  footer a {
+    color: #ccc;
+    margin: 0 10px;
+  }
+
+ /* Basis-Navigation */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;  
+    padding: 10px 20px;
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: 20px;
+  }
+
+  #product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+  
+  .product {
+    background: #fefefe;
+    border: 1px solid #ece7d9;
+    border-radius: 12px;
+    padding: 20px;
+    width: 220px;
+    text-align: left;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .product:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  }
+  
+  .product h3 {
+    font-size: 1.1rem;
+    color: #2c2c2c;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  
+  .product p {
+    margin: 4px 0;
+    font-size: 0.95rem;
+    color: #4a4a4a;
+  }
+
+  .product img {
+  width: 100%;
+  max-width: 150px;
+  height: auto;
+  display: block;
+  margin: 0 auto 10px;
+  border-radius: 8px;
+}
+  
+  
+  /* Mobilansicht */
+  @media (max-width: 768px) {
+
+    .branding {
+        width: 100%;
+        justify-content: center;
+      }
+    nav {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px; 
+      background-color: #f9f6f2; 
+    }
+  
+    .nav-links {
+      flex-direction: column;
+      width: 100%;
+      gap: 10px;
+    }
+  
+    .nav-links li {
+      width: 100%;
+    }
+  
+    .nav-links a {
+      display: block;
+      width: 100%;
+      padding: 10px 0;
+      text-align: left;
+    }
+}
