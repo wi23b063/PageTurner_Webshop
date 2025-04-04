@@ -4,6 +4,11 @@ document.getElementbyId("registerForm").addEventListener("submit", function(even
     let username = $("#username").val();
     console.log(username);
     let confirmPassword = $("#confirm_password").val();
+    let password = $("#password").val()
+    let email = $("#email").val();
+    let salutation = $("#salutation").val();
+    let firstName = $("#first_name").val();
+    let lastName = $("#last_name").val();
     let messageDiv = $("message").val(); //errors
     
     if (password.length < 8) {
@@ -18,10 +23,40 @@ document.getElementbyId("registerForm").addEventListener("submit", function(even
         return;
     }
 
+    if (!username) {
+        messageDiv.innerHTML = "Please enter a username.";
+        messageDiv.className = "error-message";
+        return;
+    }
+
+    if (!email) {
+        messageDiv.innerHTML = "Please enter an email address.";
+        messageDiv.className = "error-message";
+        return;
+    }
+
+    if (!salutation) {
+        messageDiv.innerHTML = "Please select a salutation.";
+        messageDiv.className = "error-message";
+        return;
+    }
+
+    if (!firstName) {
+        messageDiv.innerHTML = "Please enter your first name.";
+        messageDiv.className = "error-message";
+        return;
+    }
+
+    if (!lastName) {
+        messageDiv.innerHTML = "Please enter your last name.";
+        messageDiv.className = "error-message";
+        return;
+    }
+
 
     let formData = new FormData(this); //send form data to backend using fetch api
 
-    fetch("backend/userRegistration.php", {
+    fetch("backend/api.php", {
         method: "POST",
         body: formData
     })
