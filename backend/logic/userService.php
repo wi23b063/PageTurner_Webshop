@@ -23,9 +23,11 @@ class UserService {
         if (strlen($data->password ?? '') < 8) $errors[] = "Password must be at least 8 characters.";
         if ($data->password !== $data->confirm_password) $errors[] = "Passwords do not match.";
 
-        return $errors;
+        if (isset($errors)) {
+            throw new Exception(implode(", ", $errors));
+        }
     }
-
+        
     // REGISTER FUNCTION
 
     public function register($data) {
