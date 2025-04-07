@@ -178,6 +178,9 @@ function loadProducts(search = "") {
                 <img src="img/${p.image_url}" alt="${p.product_name}" />
               <p><strong>Preis:</strong> €${parseFloat(p.price).toFixed(2)}</p>
               <p><strong>Kategorie:</strong> ${p.category_name ?? "Unkategorisiert"}</p>
+              <p class="rating"><strong>Bewertung:</strong> ${
+  p.rating ? "⭐".repeat(Math.round(p.rating)) + ` (${p.rating})` : "Keine Bewertung"
+}</p>
             </div>
           `;
         });

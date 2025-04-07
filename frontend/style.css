@@ -232,7 +232,15 @@ nav {
   margin: 0 auto 10px;
   border-radius: 8px;
 }
-  
+.product .rating {
+  color: #d4a017;
+  margin-top: 4px;
+  font-size: 0.95rem;
+  color: #4a4a4a; /* gleiche Farbe wie Preis/Kategorie */
+  font-family: 'Georgia', serif;
+  margin-top: 4px;
+}
+
   
   /* Mobilansicht */
   @media (max-width: 768px) {
