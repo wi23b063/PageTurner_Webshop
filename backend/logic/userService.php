@@ -107,7 +107,7 @@ class UserService {
         $stmt = $this->conn->prepare("DELETE FROM users WHERE id = ?");
         $stmt->bind_param("i", $user['id']);
         return $stmt->execute();
-    }
+    }    
 
 
     // LOGIN FUNCTION

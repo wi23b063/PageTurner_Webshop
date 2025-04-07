@@ -3,15 +3,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Für Ausloggen (NOT YET IMPLEMENTED)
-/*if (isset($_GET['logout']) && $_GET['logout'] == 'true') {
-    
-    unset($_SESSION['user']);
-    
-   
-    header("Location: index.php");
-    exit();
-}
 // Logout prüfen und Session beenden
 if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
     session_unset();  
@@ -19,8 +10,6 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
     header("Location: index.php"); 
     exit(); 
 }  
-
-*/
 
 // Das Login wird geprüft
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
