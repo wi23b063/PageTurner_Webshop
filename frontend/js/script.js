@@ -1,6 +1,4 @@
-// ==========================
-// REGISTRIERUNG (nur aktivieren, wenn Formular vorhanden ist)
-// ==========================
+// REGISTRIERUNG
 
 const registerForm = document.getElementById("registerForm");
 if (registerForm) {
@@ -85,9 +83,7 @@ if (registerForm) {
   });
 }
 
-// ==========================
-// LOGIN (nur aktivieren, wenn Formular vorhanden ist)
-// ==========================
+// LOGIN
 
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
@@ -131,9 +127,7 @@ if (loginForm) {
   });
 }
 
-// ==========================
 // PRODUKT-SUCHE AUF STARTSEITE
-// ==========================
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("Seite geladen");
@@ -191,3 +185,9 @@ function loadProducts(search = "") {
           "<p>Fehler beim Laden der Produkte.</p>";
       });
   }
+
+  // LOG OUT
+
+  document.getElementById('logout').addEventListener('click', function() {
+    window.location.href = '?logout=true'; // triggers logout condition in session php
+});
