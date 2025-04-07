@@ -1,7 +1,9 @@
 <?php
 header("Content-Type: application/json");
 
-require_once("../inc/dbaccess.php");
+require_once("inc/dbaccess.php");
+
+$conn = getDbConnection(); 
 
 $sql = "SELECT * FROM products ORDER BY id DESC LIMIT 4";
 $result = $conn->query($sql);

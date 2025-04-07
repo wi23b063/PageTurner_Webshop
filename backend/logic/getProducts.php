@@ -2,8 +2,8 @@
 
 require_once(__DIR__ . '/../inc/dbaccess.php');
 
-
 header('Content-Type: application/json');
+$conn = getDbConnection();
 
 $search = isset($_POST['search']) ? trim($_POST['search']) : '';
 
@@ -16,6 +16,7 @@ $sql = "
 if (!empty($search)) {
     $sql .= " WHERE p.product_name LIKE '%$search%'";
 }
+
 
 $result = $conn->query($sql);
 $products = [];

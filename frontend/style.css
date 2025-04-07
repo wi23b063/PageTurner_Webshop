@@ -1,14 +1,16 @@
 body {
     margin: 0;
     font-family: 'Georgia', serif;
-    background-color: #4e391e;
-    color: #2c2c2c;
+    background-color: 	 #f8f5f0;
+    color: #2c2c2c;  
   }
 
   header {
-    background-color: #d2a036;
-    padding: 0;
-    max-height: 50px;
+    background-color: #1c120a; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 10px 0; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    
   }
 
   .nav-container {
@@ -32,15 +34,19 @@ body {
 
   .brand-name {
     font-family: 'Georgia', serif;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #000000;
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+    color: #fefefe;
     font-style: italic;
+    font-weight: bold;
   }
 
   .logo {
-    height: 30px;
-    width: auto;
+    
+      height: 38px;
+      width: auto;
+      margin-right: 8px;
+  
   }
 
   nav ul {
@@ -52,9 +58,19 @@ body {
   }
 
   nav a {
-    text-decoration: none;
-    color: #000000;
-    font-weight: bold;
+    color: #f3f3f3;
+  font-weight: 500;
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 8px 12px;
+  transition: color 0.3s ease;
+  text-decoration: none;
+  }
+
+  nav a:hover {
+    color: #d1bfa5;
   }
 
   .hero {
@@ -120,7 +136,7 @@ body {
     justify-content: center;
     border-top-right-radius: 999px;
     border-bottom-right-radius: 999px;
-    transition: background 0.3s ease;
+    transition: 0.3s ease;
   }
 
   .search-bar button svg {
@@ -192,7 +208,7 @@ nav {
   
   .product:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 16px #d9a441(0, 0, 0, 0.08);
   }
   
   .product h3 {
@@ -229,10 +245,14 @@ nav {
       flex-direction: column;
       align-items: flex-start;
       gap: 10px; 
-      background-color: #f9f6f2; 
+      background-color: #1c120a;
     }
   
     .nav-links {
+      
+      
+        align-items: center;
+        
       flex-direction: column;
       width: 100%;
       gap: 10px;
@@ -247,5 +267,17 @@ nav {
       width: 100%;
       padding: 10px 0;
       text-align: left;
+      font-size: 0.95rem;
+      padding: 8px 0;
+    }
+    nav a {
+      padding: 6px 8px;
+    }
+    nav ul {
+      gap: 40px; 
+      background-color: #1c120a;
+      padding: 10px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    
     }
 }

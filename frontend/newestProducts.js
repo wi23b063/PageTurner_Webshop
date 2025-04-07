@@ -1,5 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-    fetch("../backend/getNewestProducts.php")
+  fetch("../backend/getNewestProducts.php")
+
+
+
       .then(res => res.json())
       .then(products => {
         const container = document.getElementById("newest-books");

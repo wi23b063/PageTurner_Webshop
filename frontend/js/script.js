@@ -9,8 +9,15 @@ if (registerForm) {
 
     const username = $("#username").val();
     const password = $("#password").val();
+    const email = $("#email").val();
+    const salutation = $("#salutation").val();
+    const firstName = $("#first_name").val();
+    const lastName = $("#last_name").val();
+
+    
     const confirmPassword = $("#confirm_password").val();
     const messageDiv = document.getElementById("message");
+
 
     if (password.length < 8) {
       messageDiv.innerHTML = "Das Passwort muss mindestens 8 Zeichen lang sein.";
@@ -24,11 +31,43 @@ if (registerForm) {
       return;
     }
 
-    const formData = new FormData(this);
 
-    fetch("backend/userRegistration.php", {
-      method: "POST",
-      body: formData,
+    if (!username) {
+        messageDiv.innerHTML = "Please enter a username.";
+        messageDiv.className = "error-message";
+        return;
+    }
+
+    if (!email) {
+        messageDiv.innerHTML = "Please enter an email address.";
+        messageDiv.className = "error-message";
+        return;
+    }
+
+    if (!salutation) {
+        messageDiv.innerHTML = "Please select a salutation.";
+        messageDiv.className = "error-message";
+        return;
+    }
+
+    if (!firstName) {
+        messageDiv.innerHTML = "Please enter your first name.";
+        messageDiv.className = "error-message";
+        return;
+    }
+
+    if (!lastName) {
+        messageDiv.innerHTML = "Please enter your last name.";
+        messageDiv.className = "error-message";
+        return;
+    }
+
+
+    let formData = new FormData(this); //send form data to backend using fetch api
+
+    fetch("backend/api.php", {
+        method: "POST",
+        body: formData
     })
       .then((res) => res.json())
       .then((data) => {
@@ -114,7 +153,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadProducts(search = "") {
-    fetch("../backend/getProducts.php", {
+    fetch("../backend/logic/getProducts.php", {
+      
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
