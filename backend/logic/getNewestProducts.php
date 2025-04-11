@@ -2,23 +2,23 @@
 require_once(__DIR__ . '/../inc/dbaccess.php');
 
 
-function getProducts($search = "") {
+function getNewestProducts($limit = 4) {
     $conn = getDbConnection();
 
     $sql = "
     SELECT p.*, c.category_name
     FROM products p
     LEFT JOIN categories c ON p.category_id = c.id
+    ORDER BY p.id DESC
+    LIMIT ?
 ";
 
 
-    if (!empty($search)) {
-        $sql .= " WHERE p.product_name LIKE '%" . $conn->real_escape_string($search) . "%'";
-    }
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $limit);
+    $stmt->execute();
 
-    $sql .= " GROUP BY p.id";
-
-    $result = $conn->query($sql);
+    $result = $stmt->get_result();
     $products = [];
 
     while ($row = $result->fetch_assoc()) {

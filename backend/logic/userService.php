@@ -115,7 +115,8 @@ class UserService {
     public function login($data) {
         require_once("inc/dbaccess.php"); // to access $conn
     
-        $conn = getDbConnection();
+        $conn = $this->conn; //bestehende Verbinung wird genutzt!
+
         $response = ["success" => false, "message" => ""];
     
         $username = $data->username ?? '';
