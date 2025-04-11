@@ -9,8 +9,8 @@ if (registerForm) {
     const password = $("#password").val();
     const email = $("#email").val();
     const salutation = $("#salutation").val();
-    const firstName = $("#first_name").val();
-    const lastName = $("#last_name").val();
+    const firstName = $("#firstname").val();
+    const lastName = $("#lastname").val();
 
     
     const confirmPassword = $("#confirm_password").val();
@@ -61,11 +61,22 @@ if (registerForm) {
     }
 
 
-    let formData = new FormData(this); //send form data to backend using fetch api
+    const userData = {
+      email,
+      firstname: firstName,
+      lastname: lastName,
+      username,
+      password,
+      salutation,
+      confirm_password
+    };
 
-    fetch("backend/api.php", {
+    fetch("backend/api?user", {
         method: "POST",
-        body: formData
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
     })
       .then((res) => res.json())
       .then((data) => {

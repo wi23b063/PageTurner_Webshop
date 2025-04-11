@@ -1,8 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
-    fetch('../backend/getProducts.php')
+    fetch('../backend/logic/getProducts.php')
       .then(res => res.json())
       .then(products => {
         const container = document.getElementById("product-list");
+        container.innerHTML = ""; // Clear existing content
   
         products.forEach(p => {
           const ratingStars = p.rating
@@ -11,11 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
           container.innerHTML += `
             <div class="product">
-              <h3>${p.product_name}</h3>
-              <p><strong>Preis:</strong> €${parseFloat(p.price).toFixed(2)}</p>
-<p><strong>Bewertung:</strong> ${p.rating ? "⭐".repeat(Math.round(p.rating)) + ` (${p.rating})` : "Keine Bewertung"}</p>
-              <p><strong>Kategorie:</strong> ${p.category_name ?? "Unkategorisiert"}</p>
-            </div>
+              <h3>${p.name}</h3>
+            <img src="${p.image}" alt="${p.name}" style="max-width:150px;">
+            <p><strong>Beschreibung:</strong> ${p.description}</p>
+            <p><strong>Preis:</strong> €${parseFloat(p.price).toFixed(2)}</p>
+            <p><strong>Bewertung:</strong> ${ratingStars}</p>
+          </div>
           `;
         });
         

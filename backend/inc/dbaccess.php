@@ -11,8 +11,8 @@ function getDbConnection(): mysqli { //connection can now be called via getDbCon
     return $conn;
 
 } catch (mysqli_sql_exception $e ) {
-    error_log("DB Connection Error: "+ $e->getMessage());
-    die("An error occurred while connecting to the database")
+    error_log("DB Connection Error: ". $e->getMessage());
+    die("An error occurred while connecting to the database");
 }
 }
 
