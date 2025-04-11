@@ -3,14 +3,16 @@
 const registerForm = document.getElementById("registerForm");
 if (registerForm) {
   registerForm.addEventListener("submit", function (event) {
+    console.log("🚨 Formular wurde abgesendet!");
+
     event.preventDefault();
 
     const username = $("#username").val();
     const password = $("#password").val();
     const email = $("#email").val();
     const salutation = $("#salutation").val();
-    const firstName = $("#first_name").val();
-    const lastName = $("#last_name").val();
+    const firstName = $("#firstname").val();
+    const lastName = $("#lastname").val();
 
     
     const confirmPassword = $("#confirm_password").val();
@@ -61,11 +63,22 @@ if (registerForm) {
     }
 
 
-    let formData = new FormData(this); //send form data to backend using fetch api
+    const userData = {
+      email,
+      firstname: firstName,
+      lastname: lastName,
+      username,
+      password,
+      salutation,
+      confirm_password:confirmPassword
+    };
 
-    fetch("backend/api.php", {
+    fetch("../../backend/api.php?user", {
         method: "POST",
-        body: formData
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -147,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadProducts(search = "") {
-    fetch("../backend/logic/getProducts.php", {
+    fetch("../../backend/logic/getProducts.php", {
       
       method: "POST",
       headers: {

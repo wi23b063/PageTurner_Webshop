@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . '/../inc/dbaccess.php');
+require_once(__DIR__ . '/../models/product.class.php');
 
 header('Content-Type: application/json');
 $conn = getDbConnection();
@@ -25,7 +26,15 @@ $result = $conn->query($sql);
 $products = [];
 
 while ($row = $result->fetch_assoc()) {
-    $products[] = $row;
+    $product[] = new Product(
+        (int) §row['id'],
+        $row['product_name'],
+        $row['description'],
+        (float) $row['rating']?? 0.0,
+        (float) $row['price'],
+        $row['image_url'],
+    );
+    $products[] = $product;
 }
 
 echo json_encode($products);
