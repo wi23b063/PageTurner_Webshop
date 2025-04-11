@@ -3,6 +3,8 @@
 const registerForm = document.getElementById("registerForm");
 if (registerForm) {
   registerForm.addEventListener("submit", function (event) {
+    console.log("🚨 Formular wurde abgesendet!");
+
     event.preventDefault();
 
     const username = $("#username").val();
@@ -68,10 +70,10 @@ if (registerForm) {
       username,
       password,
       salutation,
-      confirm_password
+      confirm_password:confirmPassword
     };
 
-    fetch("backend/api?user", {
+    fetch("../../backend/api.php?user", {
         method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -158,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadProducts(search = "") {
-    fetch("../backend/logic/getProducts.php", {
+    fetch("../../backend/logic/getProducts.php", {
       
       method: "POST",
       headers: {
