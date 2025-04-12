@@ -88,7 +88,7 @@ if (registerForm) {
 
         if (data.status === "success") {
           setTimeout(() => {
-            window.location.href = "index.html";
+            window.location.href = "../index.html";
           }, 2000);
         }
       })
@@ -97,10 +97,10 @@ if (registerForm) {
 }
 
 // LOGIN
-
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
   loginForm.addEventListener("submit", function (event) {
+   
     event.preventDefault();
 
     $(".error").text("");
@@ -108,99 +108,45 @@ if (loginForm) {
 
     const username = $("#username").val().trim();
     const password = $("#password").val().trim();
-    let isValid = true;
 
-    if (!username) {
-      $("#username_error").text("Bitte Benutzernamen eingeben.");
-      isValid = false;
-    }
-    if (!password) {
-      $("#password_error").text("Bitte Passwort eingeben.");
-      isValid = false;
+    if (!username || !password) {
+      if (!username) $("#username_error").text("Bitte Benutzernamen eingeben.");
+      if (!password) $("#password_error").text("Bitte Passwort eingeben.");
+      return;
     }
 
-    if (!isValid) return;
+    const loginData = {
+      username: username,
+      password: password
+    };
 
-    $.ajax({
-      url: "UserLogin.php",
-      type: "POST",
-      data: { username, password },
-      dataType: "json",
-      success: function (res) {
-        if (res.success) {
-          window.location.href = "index.html";
+    fetch("../../backend/api.php?login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginData)
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          $("#error_message").text(data.error).show();
         } else {
-          $("#error_message").text(res.message).show();
+          console.log("✅ Angemeldet als:", data.user.username);
+          window.location.href = "../index.html";
+          
         }
-      },
-      error: function () {
+      })
+      .catch(() => {
         $("#error_message").text("Ein Fehler ist aufgetreten.").show();
-      },
-    });
+      });
   });
 }
 
-// PRODUKT-SUCHE AUF STARTSEITE
-
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("Seite geladen");
-
-  loadProducts();
-
-  const searchBtn = document.getElementById("searchBtn");
-  const searchInput = document.getElementById("searchInput");
-
-  if (searchBtn && searchInput) {
-    searchBtn.addEventListener("click", () => {
-      const search = searchInput.value.trim();
-      console.log("Suche nach:", search);
-      loadProducts(search);
-    });
-  }
-});
-
-function loadProducts(search = "") {
-    fetch("../../backend/logic/getProducts.php", {
-      
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({ search: search }),
-    })
-      .then((res) => res.json())
-      .then((products) => {
-        const container = document.getElementById("product-list");
-        container.innerHTML = "";
-  
-        if (!Array.isArray(products) || products.length === 0) {
-          container.innerHTML = "<p>Keine Produkte gefunden.</p>";
-          return;
-        }
-  
-        products.forEach((p) => {
-          container.innerHTML += `
-            <div class="product">
-              <h3>${p.product_name}</h3>
-                <img src="img/${p.image_url}" alt="${p.product_name}" />
-              <p><strong>Preis:</strong> €${parseFloat(p.price).toFixed(2)}</p>
-              <p><strong>Kategorie:</strong> ${p.category_name ?? "Unkategorisiert"}</p>
-              <p class="rating"><strong>Bewertung:</strong> ${
-  p.rating ? "⭐".repeat(Math.round(p.rating)) + ` (${p.rating})` : "Keine Bewertung"
-}</p>
-            </div>
-          `;
-        });
-      })
-      .catch((err) => {
-        console.error("Fehler beim Laden:", err);
-        document.getElementById("product-list").innerHTML =
-          "<p>Fehler beim Laden der Produkte.</p>";
-      });
-  }
 
   // LOG OUT
 
   document.getElementById('logout').addEventListener('click', function() {
     window.location.href = '?logout=true'; // triggers logout condition in session php
+    //  ACHTUNG schua vllt nochmal auf den richtigen Pfad !!!
 });

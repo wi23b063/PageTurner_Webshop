@@ -52,7 +52,23 @@ class Api {
                 $this->error(404, [], "No such user with ID $id");
             }
             $this->success(200, $user);
-        } else {
+        } else if (isset($_GET["checkSession"])) {
+            if (isset($_SESSION['user'])) {
+                $this->success(200, [
+                    "user" => [
+                        "id" => $_SESSION['user_id'],
+                        "username" => $_SESSION['user'],
+                        "firstname" => $_SESSION['firstname'],
+                        "lastname" => $_SESSION['lastname'],
+                        "role" => $_SESSION['role']
+                    ]
+                ]);
+            } else {
+                $this->success(200, ["user" => null]);
+            }
+        }
+        
+else {
             $this->error(400, [], "Bad Request - invalid parameters: " . http_build_query($_GET));
         }
     }
@@ -64,7 +80,17 @@ class Api {
         if (isset($_GET["login"])) {
             $result = $this->userService->login($data);
             if ($result["success"]) {
-                $this->success(200, ["message" => "Login successful", "user" => $_SESSION]);
+                $this->success(200, [
+                    "message" => "Login successful",
+                    "user" => [
+                        "id" => $_SESSION['user_id'],
+                        "username" => $_SESSION['user'],
+                        "email" => $_SESSION['email'],
+                        "firstname" => $_SESSION['firstname'],
+                        "lastname" => $_SESSION['lastname'],
+                        "role" => $_SESSION['role']
+                    ]
+                ]);
             } else {
                 $this->error(401, [], $result["message"]);
             }
@@ -126,3 +152,5 @@ class Api {
         exit;
     }
 }
+
+
