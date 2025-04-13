@@ -57,6 +57,11 @@ body {
     padding: 0;
   }
 
+  nav ul li {
+    margin-top: 20px;
+  }
+  
+
   nav a {
     color: #f3f3f3;
   font-weight: 500;
@@ -149,23 +154,22 @@ body {
     background-color: #d1bfa5;
     color: #1c120a;
     font-family: 'Georgia', serif;
-    font-size: 0.9rem;
+    font-size: 1rem;  /* Default button font size */
     text-transform: uppercase;
     letter-spacing: 0.4px;
-    padding: 8px 16px;
     border: none;
-    border-radius: 999px;
+    border-radius: 4px;  /* Default button border-radius */
     cursor: pointer;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     font-weight: bold;
-    }
-
-    .button:hover {
+  }
+  
+  .button:hover {
     background-color: #bfa88c;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-    }
-
+  }
+  
     .select-style {
       appearance: none;
       background-color: #fdfaf6;
@@ -219,17 +223,29 @@ body {
 
  /* Basis-Navigation */
 nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;  
-    padding: 10px 20px;
-  }
-  
-  .nav-links {
-    display: flex;
-    gap: 20px;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li a,
+.nav-links li button {
+  text-decoration: none;
+  color: white;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
 
   #product-list {
     display: flex;
