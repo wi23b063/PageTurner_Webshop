@@ -132,8 +132,12 @@ if (loginForm) {
         if (data.error) {
           $("#error_message").text(data.error).show();
         } else {
-          console.log("✅ Angemeldet als:", data.user.username);
+          //Umleitung je nach Rolle admin
+          if(data.user.role === "admin"){
+            window.location.href = "../adminPanel.html";
+          } else {
           window.location.href = "../index.html";
+          }
           
         }
       })
