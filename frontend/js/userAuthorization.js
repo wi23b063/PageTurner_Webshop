@@ -172,8 +172,13 @@ if (rememberedLogin && !currentPage.includes("index.html") && !currentPage.inclu
 const logoutBtn = document.getElementById("logout");
 if (logoutBtn) {
   logoutBtn.addEventListener("click", function () {
-    setCookie("rememberedLogin", "", -1); // Cookie löschen
-    window.location.href = "?logout=true";
+    fetch("../../backend/api.php?logout")
+      .then((res) => res.json())
+      .then(() => {
+        setCookie("rememberedLogin", "", -1); // Cookie löschen (Sicherheitshalber auch frontend)
+        window.location.href = "../index.html";
+      })
+      .catch((err) => console.error("Logout fehlgeschlagen:", err));
   });
 }
 
@@ -201,6 +206,8 @@ window.addEventListener("load", () => {
     if (logoutBtn) logoutBtn.style.display = "none";
   }
 });
+
+
 
 
 

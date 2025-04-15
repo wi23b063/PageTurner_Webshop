@@ -66,6 +66,11 @@ class Api {
             } else {
                 $this->success(200, ["user" => null]);
             }
+        } else if (isset($_GET["logout"])) {
+            session_unset();
+            session_destroy();
+            setcookie("rememberedLogin", "", time() - 3600, "/");
+            $this->success(200, ["message" => "Logout erfolgreich"]);
         }
         
 else {

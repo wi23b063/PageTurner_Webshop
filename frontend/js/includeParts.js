@@ -18,7 +18,30 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .then(data => {
         const target = document.querySelector(tagName);
-        if (target) target.outerHTML = data;
+        if (target) {
+          target.innerHTML = data;
+
+          
+  
+          //Login-Button nachladen
+          if (tagName === "header") {
+            const loginBtn = document.getElementById("login");
+            if (loginBtn) {
+              loginBtn.addEventListener("click", () => {
+                window.location.href = "sites/userLogin.html";
+              });
+            }
+  
+            // logout button nachladen
+            const logoutBtn = document.getElementById("logout");
+            if (logoutBtn) {
+              logoutBtn.addEventListener("click", () => {
+                document.cookie = "rememberedLogin=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                window.location.href = "?logout=true";
+              });
+            }
+          }
+        }
       })
       .catch(err => console.error(`❌ Fehler beim Laden von ${file}:`, err));
   }
