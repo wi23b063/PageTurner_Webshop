@@ -48,6 +48,7 @@ function loadProducts(search = "") {
             <p><strong>Kategorie:</strong> ${p.category_name ?? "Unkategorisiert"}</p>
             <p><strong>Bewertung:</strong> ${ratingStars}</p>
             <p><strong>Beschreibung:</strong> ${p.description ?? "Keine Beschreibung vorhanden"}</p>
+             <button class="button" onclick="addToCart(${p.id})">🛒 In den Warenkorb</button>
           </div>
         `;
       });
