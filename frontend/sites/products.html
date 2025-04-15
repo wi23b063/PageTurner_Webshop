@@ -1,27 +1,32 @@
 
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Product List</title>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Unsere Produkte</title>
+    <link rel="stylesheet" href="../style.css" />
+    <script src="../js/includeParts.js" defer></script>
+    <script src="../js/cart.js" defer></script>
+    <script src="../js/productList.js" defer></script>
+  </head>
+  <body>
+
+
+
+  <header></header>
+  <main>
+    <h1>Unser Sortiment</h1>
+    <div id="product-list"></div>
+  </main>
+  <footer></footer>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      includeHTML("header", "../header.html");
+      includeHTML("footer", "../footer.html");
+      updateCartCount();
+    });
+  </script>
   
-  <style>
-    .product {
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin-bottom: 15px;
-      max-width: 400px;
-    }
-    .product img {
-      width: 100%;
-      max-width: 150px;
-    }
-  </style>
-</head>
-<body>
-  <h1>Available Products</h1>
   
-  <div id="product-list"></div>
-  <script src="../js/productList.js" defer></script>
 </body>
 </html>
