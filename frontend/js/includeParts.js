@@ -3,13 +3,40 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
   const path = window.location.pathname;
-  // Wenn wir in einem /sites/-Unterordner sind, brauchen wir "../" vor den Pfaden
   const prefix = path.includes("/sites/") ? "../" : "";
+
+  // Bestimme Prefix für Redirects (unterscheidet zwischen Root-Index und /sites/)
+  const redirectPrefix = path.includes("/sites/") ? "" : "sites/";
+
+  
 
   try {
     // 1) Header & Footer asynchron laden
     await includeHTML("header", `${prefix}partials/header.html`);
     await includeHTML("footer", `${prefix}partials/footer.html`);
+
+    // nachdem Header geladen hat, lade navVisibility und warte auf vollständiges Laden
+    await loadScript(`${prefix}js/navVisibility.js`);
+
+    setTimeout(() => {
+      if (typeof updateNavbarVisibility === "function") {
+        updateNavbarVisibility();
+      }
+
+      const loginBtn = document.getElementById("login");
+      if (loginBtn) {
+        loginBtn.addEventListener("click", () => {
+          window.location.href = `${redirectPrefix}userLogin.html`;
+        });
+      }
+    }, 50); // Verzögerung von 50ms garantiert DOM-Verfügbarkeit!
+
+
+    // danach weitere Scripts laden (userAuthorization.js etc.)
+    await loadScript(`${prefix}js/userAuthorization.js`);
+
+    
+
   } catch (e) {
     console.error("❌ Include-Error:", e);
     return;
@@ -28,47 +55,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-   // Bestimme Prefix für Redirects (unterscheidet zwischen Root-Index und /sites/)
-const redirectPrefix = window.location.pathname.includes("/sites/") ? "" : "sites/";
-//Button wird hier eingebunden weil navVisibility.js und userAutho.js denn beide brauchen
-const loginBtn = document.getElementById("login");
-if (loginBtn) {
-  loginBtn.addEventListener("click", () => {
-    window.location.href = `${redirectPrefix}userLogin.html`;
-  });
-}
-
-
-
-
   // 3) Bildpfade (z.B. Logo) anpassen
-  // Header.html sollte src="res/img/logoweis.png" nutzen
   document.querySelectorAll("header img").forEach(img => {
     const src = img.getAttribute("src");
-    // nur relative Pfade anpassen
     if (src && !src.startsWith("http") && !src.startsWith("/")) {
       img.src = prefix + src;
     }
   });
 
- 
-  // 4) Navbar‑Visibility 
-  const navVisScript = document.createElement("script");
-  navVisScript.src = `${prefix}js/navVisibility.js`;
-  document.head.appendChild(navVisScript);
-
-  // 5) Auth‑Skript nachladen (Formular‑Handling, Logout, Cookie‑Logic)
-  const authScript = document.createElement("script");
-  authScript.src = `${prefix}js/userAuthorization.js`;
-  document.head.appendChild(authScript);
-
-  // 6) Warenkorb‑Zähler aktualisieren, wird noch wsl geändert
+  // 4) Warenkorb‑Zähler aktualisieren (optional, falls vorhanden)
   if (typeof updateCartCount === "function") {
     updateCartCount();
   }
 });
 
-// Funktion zum Einbinden von HTML‑Partials
+// Hilfsfunktion zum Laden externer JS-Scripts (fehlt aktuell noch in deinem Code!)
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error(`Script load error for ${src}`));
+    document.head.appendChild(script);
+  });
+}
+
+// Funktion zum Einbinden von HTML‑Partials (bereits vorhanden)
 function includeHTML(selector, file) {
   return fetch(file)
     .then(res => {

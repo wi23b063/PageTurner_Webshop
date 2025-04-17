@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (searchBtn && searchInput) {
     searchBtn.addEventListener("click", () => {
       const search = searchInput.value.trim();
-      console.log("🔍 Suche nach:", search);
+      console.log(" Suche nach:", search);
       loadProducts(search);
     });
   }

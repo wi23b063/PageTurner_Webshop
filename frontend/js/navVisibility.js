@@ -48,9 +48,5 @@ function updateNavbarVisibility() {
    
   }
   
-  // Sofort ausführen und als Fallback
-  updateNavbarVisibility();
-  document.addEventListener("DOMContentLoaded", updateNavbarVisibility);
-  
-  
+ 
   
