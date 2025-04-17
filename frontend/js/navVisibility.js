@@ -11,16 +11,17 @@ function updateNavbarVisibility() {
     const pagePath     = window.location.pathname;
 
      // Regulärer Zustand
-     if (cookie) {
-        // eingeloggt → Login + Register verstecken, Logout zeigen
-        if (loginBtn)   loginBtn.style.display    = "none";
-        if (registerLi) registerLi.style.display  = "none";
-        if (logoutBtn)  logoutBtn.style.display   = "inline-block";
+     if (!cookie) {
+         // nicht eingeloggt → Logout verstecken, Login + Register zeigen
+         if (loginBtn)   loginBtn.style.display    = "inline-block";
+         if (registerLi) registerLi.style.display  = "inline-block";
+         if (logoutBtn)  logoutBtn.style.display   = "none";
+        
       } else {
-        // nicht eingeloggt → Logout verstecken, Login + Register zeigen
-        if (loginBtn)   loginBtn.style.display    = "inline-block";
-        if (registerLi) registerLi.style.display  = "inline-block";
-        if (logoutBtn)  logoutBtn.style.display   = "none";
+       // eingeloggt → Login + Register verstecken, Logout zeigen
+       if (loginBtn)   loginBtn.style.display    = "none";
+       if (registerLi) registerLi.style.display  = "none";
+       if (logoutBtn)  logoutBtn.style.display   = "inline-block";
       }
   
   
