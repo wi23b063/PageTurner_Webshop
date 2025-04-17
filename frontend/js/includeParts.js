@@ -4,8 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
   
     const prefix = isInSites ? "../" : "";
   
-    includeHTML("header", `${prefix}header.html`);
-    includeHTML("footer", `${prefix}footer.html`);
+    includeHTML("header", `${prefix}partials/header.html`);
+    includeHTML("footer", `${prefix}partials/footer.html`);
   
     updateCartCount?.();
   });
