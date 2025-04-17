@@ -1,11 +1,3 @@
-const loginBtn = document.getElementById("login");
-
-if (loginBtn) {
-  loginBtn.addEventListener("click", function () {
-    window.location.href = "sites/userLogin.html";
-  });
-}
-
 
 
 // REGISTRIERUNG
@@ -75,52 +67,45 @@ if (registerForm) {
 // LOGIN
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
-  loginForm.addEventListener("submit", function (event) {
+  loginForm.addEventListener("submit", function(event) {
     event.preventDefault();
 
-    $(".error").text("");
-    $("#error_message").hide();
+    const messageDiv = document.getElementById("error_message");
+    document.querySelectorAll(".error").forEach(el => el.textContent = "");
+    if (messageDiv) messageDiv.style.display = "none";
 
-    const username = $("#username").val().trim();
-    const password = $("#password").val().trim();
-
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
     if (!username || !password) {
-      if (!username) $("#username_error").text("Bitte Benutzernamen eingeben.");
-      if (!password) $("#password_error").text("Bitte Passwort eingeben.");
+      if (!username) document.getElementById("username_error").textContent = "Bitte Benutzernamen eingeben.";
+      if (!password) document.getElementById("password_error").textContent = "Bitte Passwort eingeben.";
       return;
     }
-
-    const loginData = { username, password };
 
     fetch("../../backend/api.php?login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(loginData),
+      body: JSON.stringify({ username, password })
     })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          $("#error_message").text(data.error).show();
-        } else {
-          // Always set the cookie when login is successful (no matter if "Remember Me" is checked)
-          const rememberedUser = {
-            username,
-            role: data.user.role || "user",
-          };
-          setCookie("rememberedLogin", JSON.stringify(rememberedUser), 30);
-          console.log("Cookie gespeichert:", rememberedUser);
-
-          // Redirect based on role
-          if (data.user.role === "admin") {
-            window.location.href = "../adminPanel.html";
-          } else {
-            window.location.href = "../index.html";
-          }
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        if (messageDiv) {
+          messageDiv.textContent = data.error;
+          messageDiv.style.display = "block";
         }
-      })
-      .catch(() => {
-        $("#error_message").text("Ein Fehler ist aufgetreten.").show();
-      });
+      } else {
+        const rememberedUser = { username, role: data.user.role || "user" };
+        setCookie("rememberedLogin", JSON.stringify(rememberedUser), 30);
+        window.location.href = data.user.role === "admin" ? "../adminPanel.html" : "../index.html";
+      }
+    })
+    .catch(() => {
+      if (messageDiv) {
+        messageDiv.textContent = "Ein Fehler ist aufgetreten.";
+        messageDiv.style.display = "block";
+      }
+    });
   });
 }
 
@@ -151,7 +136,12 @@ function getCookie(name) {
 const rememberedLogin = getCookie("rememberedLogin");
 const currentPage = window.location.pathname;
 
-if (rememberedLogin && !currentPage.includes("index.html") && !currentPage.includes("adminPanel.html")) {
+if (rememberedLogin
+  && !currentPage.includes("index.html")
+  && !currentPage.includes("adminPanel.html")
+  && !currentPage.includes("userRegistration.html")
+  && !currentPage.includes("userLogin.html")
+) {
   try {
     const user = JSON.parse(rememberedLogin);
     console.log("Automatisch weiterleiten als:", user);
@@ -176,31 +166,3 @@ if (logoutBtn) {
     window.location.href = "?logout=true";
   });
 }
-
-// Hide buttons
-window.addEventListener("load", () => {
-  const loginBtn = document.getElementById("login");
-  const logoutBtn = document.getElementById("logout");
-
-  const cookie = getCookie("rememberedLogin");
-  console.log("Cookie found:", cookie);
-
-  if (cookie) {
-    try {
-      const user = JSON.parse(cookie);
-      console.log("Logged in as:", user);
-
-      if (loginBtn) loginBtn.style.display = "none";
-      if (logoutBtn) logoutBtn.style.display = "inline-block";
-    } catch (e) {
-      console.error("Fehler beim Parsen des Cookies:", e);
-      setCookie("rememberedLogin", "", -1); // Cookie löschen, wenn ungültig
-    }
-  } else {
-    if (loginBtn) loginBtn.style.display = "inline-block";
-    if (logoutBtn) logoutBtn.style.display = "none";
-  }
-});
-
-
-
