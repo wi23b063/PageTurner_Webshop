@@ -301,6 +301,10 @@ nav {
   margin-top: 4px;
 }
 
+#logout, #login, #nav-register {
+  display: none;
+}
+
   
   /* Mobilansicht */
   @media (max-width: 768px) {
