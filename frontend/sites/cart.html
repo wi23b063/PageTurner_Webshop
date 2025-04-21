@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <title>Warenkorb</title>
+        <link rel="stylesheet" href="../res/css/style.css" />
+        <style>
+          .cart-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+            padding: 40px 20px 80px; /* extra bottom padding */
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 90%;
+          }
+        
+          .cart-items {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+          }
+        
+          .cart-item {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #ece7d9;
+          }
+        
+          .cart-item img {
+            width: 80px;
+            height: auto;
+            border-radius: 6px;
+            margin-right: 16px;
+          }
+        
+          .item-info {
+            flex-grow: 1;
+          }
+        
+          .item-info h4 {
+            margin: 0 0 8px;
+            font-size: 1rem;
+          }
+        
+          .cart-summary {
+            flex: 1;
+            background-color: #fdfaf6;
+            padding: 24px;
+            border: 1px solid #ece7d9;
+            border-radius: 12px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: fit-content;
+          }
+        
+          .cart-summary h3 {
+            margin-top: 0;
+            font-size: 1.2rem;
+          }
+        
+          .cart-summary input[type="text"] {
+            padding: 10px;
+            border: 1px solid #d1bfa5;
+            border-radius: 6px;
+            font-family: 'Georgia', serif;
+            font-size: 1rem;
+            width: 70%; /* Verkürzt das Eingabefeld */
+            margin-right: 10px;
+            box-sizing: border-box;
+          }
+        
+          .total-price {
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: right;
+          }
+        
+          .cart-summary .button {
+            align-self: flex-end;
+            padding: 10px 24px;
+            font-size: 1rem;
+          }
+        
+          @media (max-width: 768px) {
+            .cart-container {
+              flex-direction: column;
+            }
+        
+            .cart-summary {
+              width: 100%;
+            }
+        
+            .cart-summary .button {
+              width: 100%;
+            }
+
+            .cart-summary input[type="text"] {
+              width: 100%;
+            }
+          }
+        </style>
+          
+    </head>
+
+    <body>
+      <header><script src="../js/includeParts.js" defer></script></header>
+        <div class="container">
+            <h2>Ihr Warenkorb</h2>
+
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Bild</th>
+                        <th>Produkt</th>
+                        <th>Preis</th>
+                        <th>Menge</th>
+                        <th>Gesamt</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><img src="https://via.placeholder.com/50" alt="Produktbild" class="product-image" /></td>
+                        <td>Produkt 1</td>
+                        <td>19,99€</td>
+                        <td>1</td>
+                        <td class="product-total">19,99€</td>
+                    </tr>
+                    <tr>
+                        <td><img src="https://via.placeholder.com/50" alt="Produktbild" class="product-image" /></td>
+                        <td>Produkt 2</td>
+                        <td>29,99€</td>
+                        <td>1</td>
+                        <td class="product-total">29,99€</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="cart-summary">
+                <div class="input-container">
+                    <label for="coupon-code">Rabattcode:</label>
+                    <input type="text" id="coupon-code" placeholder="Geben Sie Ihren Rabattcode ein" />
+                    <button class="button" id="apply-coupon">Rabatt anwenden</button>
+                </div>
+
+                <div class="total-price">
+                    <p>Gesamtsumme: <span id="total-amount">0,00€</span></p>
+                </div>
+
+                <button class="button" id="payment-button">Jetzt Bezahlen</button>
+            </div>
+        </div>
+        <footer><script src="../js/includeParts.js" defer></script></footer>
+    </body>
+</html>
