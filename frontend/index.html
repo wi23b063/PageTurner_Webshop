@@ -8,7 +8,8 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="js/productList.js"></script>
 
-  <style></style>
+
+  </style>
 
 </head>
 
@@ -23,7 +24,7 @@
     <h1>Finde dein nächstes Lieblingsbuch</h1>
     <p class="subline">mit PageTurner</p>
 
-    <div class="search-bar">
+    <div style="position: relative; z-index: 10;" class="search-bar">
       <input type="text" id="searchInput" placeholder="Nach Produkten suchen" />
       <button id="searchBtn" type="button" aria-label="Suchen">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#333" viewBox="0 0 24 24">
@@ -43,8 +44,10 @@
   <section class="new-books">
     <h2>Unsere neuesten Produkte</h2>
     <div id="newest-books"></div>
-    <a href="sites/products.html">Alle Produkte anzeigen</a>
+    
   </section>
+
+  
 
   <script src="js/includeParts.js" defer></script>
   
