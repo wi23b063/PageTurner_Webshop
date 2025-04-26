@@ -4,6 +4,9 @@ require_once("logic/getNewestProducts.php");
 
 header("Content-Type: application/json");
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 //  GET products
 if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["products"])) {
     $search = $_GET["search"] ?? "";
