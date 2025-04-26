@@ -141,6 +141,8 @@ if (rememberedLogin
   && !currentPage.includes("adminPanel.html")
   && !currentPage.includes("userRegistration.html")
   && !currentPage.includes("userLogin.html")
+  && !currentPage.includes("/sites/")
+  && !currentPage.includes("/admin/")
 ) {
   try {
     const user = JSON.parse(rememberedLogin);
