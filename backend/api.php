@@ -3,6 +3,7 @@
 require_once("inc/dbaccess.php");
 include_once("models/user.class.php");
 include_once("logic/userService.php");
+require_once("logic/getCustomers.php"); 
 
 header("Content-Type: application/json");
 
@@ -66,16 +67,23 @@ class Api {
             } else {
                 $this->success(200, ["user" => null]);
             }
+        } 
+        else if (isset($_GET["customers"])) { //  Kundenverwaltung
+            try {
+                $customers = getCustomers(); // Holt alle Kunden (ohne Admins)
+                $this->success(200, $customers);
+            } catch (Exception $e) {
+                $this->error(500, [], "Fehler beim Laden der Kunden: " . $e->getMessage());
+            }
         }
-        
-else {
+        else {
             $this->error(400, [], "Bad Request - invalid parameters: " . http_build_query($_GET));
         }
     }
 
     private function processPost() {
         $data = json_decode(file_get_contents("php://input"));
-
+    
         // 🔐 Login flow
         if (isset($_GET["login"])) {
             $result = $this->userService->login($data);
@@ -95,14 +103,14 @@ else {
                 $this->error(401, [], $result["message"]);
             }
         }
-
+    
         // 📝 Registration flow
         else if (isset($_GET["user"])) {
             $errors = $this->userService->validateUserData($data);
             if (!empty($errors)) {
                 $this->error(400, [], implode(" ", $errors));
             }
-
+    
             try {
                 $newUserId = $this->userService->register($data);
                 $this->success(201, ["message" => "User created", "user_id" => $newUserId]);
@@ -110,12 +118,34 @@ else {
                 $this->error(400, [], $e->getMessage());
             }
         }
-
+    
+        // ✨ Kundenstatus ändern (aktivieren/deaktivieren)
+        else if (isset($_GET["updateCustomerStatus"])) {
+            if (!isset($data->id) || !isset($data->newStatus)) {
+                $this->error(400, [], "Ungültige Daten");
+            }
+    
+            $conn = getDbConnection();
+            $stmt = $conn->prepare("UPDATE users SET user_status = ? WHERE id = ?");
+            if (!$stmt) {
+                $this->error(500, [], "Datenbankfehler beim Vorbereiten des Statements");
+            }
+    
+            $stmt->bind_param("ii", $data->newStatus, $data->id);
+    
+            if ($stmt->execute()) {
+                $this->success(200, ["success" => true]);
+            } else {
+                $this->error(500, [], "Fehler beim Update: " . $conn->error);
+            }
+        }
+    
         // 🤷‍♂️ Unknown POST request
         else {
             $this->error(400, [], "Bad Request - unknown path: " . http_build_query($_GET));
         }
     }
+    
 
     private function processDelete() {
         if (!isset($_GET["user"])) {
@@ -152,5 +182,3 @@ else {
         exit;
     }
 }
-
-

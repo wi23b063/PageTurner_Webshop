@@ -136,28 +136,40 @@ function getCookie(name) {
 const rememberedLogin = getCookie("rememberedLogin");
 const currentPage = window.location.pathname;
 
-if (rememberedLogin
-  && !currentPage.includes("index.html")
-  && !currentPage.includes("adminPanel.html")
-  && !currentPage.includes("userRegistration.html")
-  && !currentPage.includes("userLogin.html")
-  && !currentPage.includes("/sites/")
-  && !currentPage.includes("/admin/")
-) {
+if (rememberedLogin) {
   try {
     const user = JSON.parse(rememberedLogin);
-    console.log("Automatisch weiterleiten als:", user);
 
     if (user.role === "admin") {
-      window.location.href = "../adminPanel.html";
+      // Admin ist eingeloggt
+      if (
+        !currentPage.includes("adminPanel.html") &&
+        !currentPage.includes("/admin/") &&
+        !currentPage.includes("index.html")
+      ) {
+        window.location.href = "../adminPanel.html";
+      }
+      // ❗ Admin darf bleiben auf admin-Seiten!
     } else {
-      window.location.href = "../index.html";
+      // ❗ Kein Admin, aber versucht auf Admin-Seite zu gehen → Umleiten
+      if (currentPage.includes("/admin/")) {
+        window.location.href = "../index.html";
+      }
     }
   } catch (e) {
-    console.error("Fehler beim Parsen des rememberedLogin-Cookies:", e);
-    setCookie("rememberedLogin", "", -1); // Sicherheitshalber löschen
+    console.error("❌ Fehler beim Lesen des rememberedLogin Cookies:", e);
+    setCookie("rememberedLogin", "", -1);
+    if (currentPage.includes("/admin/")) {
+      window.location.href = "../index.html";
+    }
+  }
+} else {
+  // ❗ Wenn rememberedLogin fehlt → Umleiten nur bei /admin/ Seiten
+  if (currentPage.includes("/admin/")) {
+    window.location.href = "../index.html";
   }
 }
+
 
 
 // LOG OUT
@@ -165,6 +177,6 @@ const logoutBtn = document.getElementById("logout");
 if (logoutBtn) {
   logoutBtn.addEventListener("click", function () {
     setCookie("rememberedLogin", "", -1); // Cookie löschen
-    window.location.href = "?logout=true";
+    window.location.href = "index.html?logout=true";
   });
 }

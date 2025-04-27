@@ -3,19 +3,27 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
   const path = window.location.pathname;
-  const prefix = path.includes("/sites/") ? "../" : "";
 
-  // Bestimme Prefix für Redirects (unterscheidet zwischen Root-Index und /sites/)
-  const redirectPrefix = path.includes("/sites/") ? "" : "sites/";
+  // Prefix für Seiten bestimmen
+  const prefix = path.includes("/sites/") || path.includes("/admin/") ? "../" : "";
 
-  
+  // Admin-Seiten erkennen
+  const isAdminPage = path.includes("/admin/") || path.includes("adminPanel.html");
+
+  // Header-Datei auswählen (klassisch geschrieben für Browser-Kompatibilität)
+  let headerFile;
+  if (isAdminPage) {
+    headerFile = prefix + "partials/adminHeader.html";
+  } else {
+    headerFile = prefix + "partials/header.html";
+  }
 
   try {
-    // 1) Header & Footer asynchron laden
-    await includeHTML("header", `${prefix}partials/header.html`);
+    // Header und Footer einfügen
+    await includeHTML("header", headerFile);
     await includeHTML("footer", `${prefix}partials/footer.html`);
 
-    // nachdem Header geladen hat, lade navVisibility und warte auf vollständiges Laden
+    // Wichtige Skripte nachladen
     await loadScript(`${prefix}js/navVisibility.js`);
 
     setTimeout(() => {
@@ -25,37 +33,29 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const loginBtn = document.getElementById("login");
       if (loginBtn) {
+        const redirectPrefix = path.includes("/sites/") || path.includes("/admin/") ? "" : "sites/";
         loginBtn.addEventListener("click", () => {
           window.location.href = `${redirectPrefix}userLogin.html`;
         });
       }
-    }, 50); // Verzögerung von 50ms garantiert DOM-Verfügbarkeit!
+    }, 50);
 
-
-    // danach weitere Scripts laden (userAuthorization.js etc.)
     await loadScript(`${prefix}js/userAuthorization.js`);
-
-    
 
   } catch (e) {
     console.error("❌ Include-Error:", e);
     return;
   }
 
-  // 2) Nav‑Links (Register, Kontakt, etc.) an den aktuellen Pfad anpassen
+  // Alle internen Link-Pfade anpassen (z.B. Navbar-Links)
   document.querySelectorAll(".nav-links a").forEach(link => {
     const href = link.getAttribute("href");
-    if (
-      href &&
-      !href.startsWith("http") &&
-      !href.startsWith("/") &&
-      !href.startsWith("#")
-    ) {
+    if (href && !href.startsWith("http") && !href.startsWith("/") && !href.startsWith("#")) {
       link.setAttribute("href", prefix + href);
     }
   });
 
-  // 3) Bildpfade (z.B. Logo) anpassen
+  // Bildpfade (z.B. Logos) anpassen
   document.querySelectorAll("header img").forEach(img => {
     const src = img.getAttribute("src");
     if (src && !src.startsWith("http") && !src.startsWith("/")) {
@@ -63,24 +63,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // 4) Warenkorb‑Zähler aktualisieren (optional, falls vorhanden)
+  // Falls vorhanden: Warenkorb-Zähler aktualisieren
   if (typeof updateCartCount === "function") {
     updateCartCount();
   }
 });
 
-// Hilfsfunktion zum Laden externer JS-Scripts (fehlt aktuell noch in deinem Code!)
-function loadScript(src) {
-  return new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = src;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error(`Script load error for ${src}`));
-    document.head.appendChild(script);
-  });
-}
+// Hilfsfunktionen
 
-// Funktion zum Einbinden von HTML‑Partials (bereits vorhanden)
 function includeHTML(selector, file) {
   return fetch(file)
     .then(res => {
@@ -92,4 +82,14 @@ function includeHTML(selector, file) {
       if (!el) throw new Error(`Element <${selector}> nicht gefunden`);
       el.outerHTML = html;
     });
+}
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error(`Script load error for ${src}`));
+    document.head.appendChild(script);
+  });
 }
