@@ -4,34 +4,60 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("searchInput");
 
   if (searchInput) {
-    searchInput.value = ""; // <-- clear the search input on page load!
+    searchInput.value = ""; // Suchfeld beim Laden leeren
     searchInput.addEventListener("input", () => {
       const search = searchInput.value.trim();
       console.log("Live-Suche nach:", search);
+
+      if (search.length < 2) {
+        // 🔥 Nur suchen wenn mindestens 2 Zeichen
+        const container = document.getElementById("product-list");
+        if (container) {
+          container.innerHTML = ""; // Produktliste leeren
+        }
+        return;
+      }
+
+      // 🔥 Bei gültiger Eingabe Produkte suchen
       loadProducts(search);
     });
   }
-});
 
+  // 🔥 Produkte nur automatisch laden, wenn wir auf products.html sind
+  if (window.location.pathname.includes("products.html")) {
+    loadProducts();
+  }
+});
 
 function loadProducts(search = "") {
   console.log("Lade Produkte... Suchbegriff:", search);
 
-  const url = new URL("../backend/product_api.php", window.location.href);
-  url.searchParams.set("products", "1"); // signalisiert Produktabfrage
-
-  if (search) {
-    url.searchParams.set("search", search);
+  let pathPrefix = "";
+  if (window.location.pathname.includes("/frontend/sites/")) {
+    pathPrefix = "../../backend/product_api.php";
+  } else {
+    pathPrefix = "../backend/product_api.php";
   }
 
-  console.log("Fetch URL:", url.toString()); // Debug Ausgabe
+  let url = pathPrefix + "?products=1";
 
-  fetch(url.toString())
+  if (search) {
+    url += `&search=${encodeURIComponent(search)}`;
+  }
+
+  console.log("Fetch URL:", url);
+
+  fetch(url)
     .then((res) => res.json())
     .then((products) => {
-      console.log("Produkte erhalten:", products); // Debug Ausgabe
+      console.log("Produkte erhalten:", products);
 
       const container = document.getElementById("product-list");
+      if (!container) {
+        console.error("❌ Kein #product-list Container gefunden!");
+        return;
+      }
+
       container.innerHTML = "";
 
       if (!Array.isArray(products) || products.length === 0) {
@@ -56,7 +82,9 @@ function loadProducts(search = "") {
     })
     .catch((err) => {
       console.error("❌ Fehler beim Laden der Produkte:", err);
-      document.getElementById("product-list").innerHTML =
-        "<p>Fehler beim Laden der Produkte.</p>";
+      const container = document.getElementById("product-list");
+      if (container) {
+        container.innerHTML = "<p>Fehler beim Laden der Produkte.</p>";
+      }
     });
 }
