@@ -177,6 +177,15 @@ const logoutBtn = document.getElementById("logout");
 if (logoutBtn) {
   logoutBtn.addEventListener("click", function () {
     setCookie("rememberedLogin", "", -1); // Cookie löschen
-    window.location.href = "index.html?logout=true";
+
+    let prefix = "";
+    const path = window.location.pathname;
+
+    if (path.includes("/sites/") || path.includes("/admin/")) {
+      prefix = "../"; // Eine Ebene zurück auf frontend/
+    }
+
+    window.location.href = prefix + "index.html?logout=true";
   });
 }
+

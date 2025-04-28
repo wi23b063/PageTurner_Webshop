@@ -131,7 +131,7 @@ class Api {
                 $this->error(500, [], "Datenbankfehler beim Vorbereiten des Statements");
             }
     
-            $stmt->bind_param("ii", $data->newStatus, $data->id);
+            $stmt->bind_param("si", $data->newStatus, $data->id);
     
             if ($stmt->execute()) {
                 $this->success(200, ["success" => true]);

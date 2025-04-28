@@ -24,11 +24,12 @@ document.addEventListener("DOMContentLoaded", () => {
             <td>${customer.id}</td>
             <td>${customer.firstname} ${customer.lastname}</td>
             <td>${customer.email}</td>
-            <td>${customer.active ? "Aktiv" : "Inaktiv"}</td>
+            <td>${customer.active === 'active' ? "Aktiv" : "Inaktiv"}</td>
             <td>
-              <button class="btn btn-sm ${customer.active ? 'btn-danger' : 'btn-success'}" onclick="toggleCustomerStatus(${customer.id}, ${customer.active ? 1 : 0})">
+              <button class="btn btn-sm ${customer.active === 'active' ? 'btn-danger' : 'btn-success'}" 
+                onclick="toggleCustomerStatus(${customer.id}, '${customer.active}')">
+                ${customer.active === 'active' ? "Deaktivieren" : "Aktivieren"}
 
-                ${customer.active ? "Deaktivieren" : "Aktivieren"}
               </button>
             </td>
           `;
@@ -44,7 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
   
   function toggleCustomerStatus(id, currentStatus) {
     let prefix = window.location.pathname.includes("/admin/") ? "../../" : "../";
-    const newStatus = currentStatus ? 0 : 1;
+    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+
   
     fetch(prefix + `backend/api.php?updateCustomerStatus=1`, {
       method: "POST",
