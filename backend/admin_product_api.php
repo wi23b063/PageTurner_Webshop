@@ -19,6 +19,79 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["products"])) {
     exit;
 }
 
+//Produkt laden beim Produkt Bearbeitungsformular (GET)
+if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["getProduct"])) {
+    try {
+        $id = intval($_GET["getProduct"]);
+        $conn = getDbConnection();
+        $stmt = $conn->prepare("SELECT id, product_name, description, price, rating, image_url FROM products WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($row = $result->fetch_assoc()) {
+            echo json_encode($row);
+        } else {
+            http_response_code(404);
+            echo json_encode(["error" => "Produkt nicht gefunden"]);
+        }
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(["error" => $e->getMessage()]);
+    }
+    exit;
+}
+
+
+
+
+//update Produkt (POST)
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_GET["updateProduct"])) {
+    try {
+        $id = intval($_GET["updateProduct"]);
+        if (!$id || !isset($_POST['productName'], $_POST['productDescription'], $_POST['productPrice'], $_POST['productRating'])) {
+            throw new Exception("Fehlende Felder für Update.");
+        }
+
+        $productName = $_POST['productName'];
+        $description = $_POST['productDescription'];
+        $price = floatval($_POST['productPrice']);
+        $rating = floatval($_POST['productRating']);
+
+        $conn = getDbConnection();
+
+        // Wenn Bild neu hochgeladen wurde
+        if (!empty($_FILES['productImage']['name'])) {
+            $uploadDir = __DIR__ . "/productpictures/";
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
+            $filename = uniqid("prod_") . "_" . basename($_FILES['productImage']['name']);
+            $targetFile = $uploadDir . $filename;
+
+            if (!move_uploaded_file($_FILES['productImage']['tmp_name'], $targetFile)) {
+                throw new Exception("Bild-Upload fehlgeschlagen.");
+            }
+
+            $stmt = $conn->prepare("UPDATE products SET product_name = ?, description = ?, price = ?, rating = ?, image_url = ? WHERE id = ?");
+            $stmt->bind_param("ssdssi", $productName, $description, $price, $rating, $filename, $id);
+        } else {
+            $stmt = $conn->prepare("UPDATE products SET product_name = ?, description = ?, price = ?, rating = ? WHERE id = ?");
+            $stmt->bind_param("ssdsi", $productName, $description, $price, $rating, $id);
+        }
+
+        if ($stmt->execute()) {
+            echo json_encode(["success" => true]);
+        } else {
+            throw new Exception("Update fehlgeschlagen: " . $conn->error);
+        }
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(["error" => $e->getMessage()]);
+    }
+    exit;
+}
+
+
+
 // Produkt löschen (DELETE)
 if ($_SERVER["REQUEST_METHOD"] === "DELETE" && isset($_GET["deleteProduct"])) {
     $productId = intval($_GET["deleteProduct"]);
