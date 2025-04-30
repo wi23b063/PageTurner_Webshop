@@ -1,8 +1,7 @@
 
 // Hide buttons
-// ---------------------------------------
 // Navbar Visibility basierend auf Cookie
-// ---------------------------------------
+
 function updateNavbarVisibility() {
     const loginBtn     = document.getElementById("login");
     const logoutBtn    = document.getElementById("logout");

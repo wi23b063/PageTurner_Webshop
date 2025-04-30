@@ -1,16 +1,13 @@
-// includeParts.js
-// Lädt Header, Footer, Navbar-Visibility, Auth-Logik und Warenkorb-Zähler dynamisch auf allen Seiten
-
 document.addEventListener("DOMContentLoaded", async () => {
   const path = window.location.pathname;
 
-  // Prefix für Seiten bestimmen
+  // Prefix für sites
   const prefix = path.includes("/sites/") || path.includes("/admin/") ? "../" : "";
 
-  // Admin-Seiten erkennen
+  // Prefix für admin 
   const isAdminPage = path.includes("/admin/") || path.includes("adminPanel.html");
 
-  // Header-Datei auswählen (klassisch geschrieben für Browser-Kompatibilität)
+  // Header-Datei auswählen je nach admin oder user
   let headerFile;
   if (isAdminPage) {
     headerFile = prefix + "partials/adminHeader.html";
@@ -41,13 +38,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     }, 50);
 
     await loadScript(`${prefix}js/userAuthorization.js`);
+    
 
   } catch (e) {
-    console.error("❌ Include-Error:", e);
+    console.error("Include-Error:", e);
     return;
   }
 
-  // Alle internen Link-Pfade anpassen (z.B. Navbar-Links)
+  // Alle internen Link-Pfade anpassen 
   document.querySelectorAll(".nav-links a").forEach(link => {
     const href = link.getAttribute("href");
     if (href && !href.startsWith("http") && !href.startsWith("/") && !href.startsWith("#")) {
@@ -55,7 +53,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // Bildpfade (z.B. Logos) anpassen
+  // Bildpfade, Logos anpassen
   document.querySelectorAll("header img").forEach(img => {
     const src = img.getAttribute("src");
     if (src && !src.startsWith("http") && !src.startsWith("/")) {
@@ -70,16 +68,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // Hilfsfunktionen
-
 function includeHTML(selector, file) {
   return fetch(file)
     .then(res => {
-      if (!res.ok) throw new Error(`${file} nicht gefunden (${res.status})`);
+      if (!res.ok) throw new Error(`${file} not found (${res.status})`);
       return res.text();
     })
     .then(html => {
       const el = document.querySelector(selector);
-      if (!el) throw new Error(`Element <${selector}> nicht gefunden`);
+      if (!el) throw new Error(`Element <${selector}> not found`);
       el.outerHTML = html;
     });
 }
