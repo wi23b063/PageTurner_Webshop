@@ -1,5 +1,3 @@
-
-
 // REGISTRIERUNG
 const registerForm = document.getElementById("registerForm");
 if (registerForm) {
@@ -13,22 +11,25 @@ if (registerForm) {
     const salutation = $("#salutation").val();
     const firstName = $("#firstname").val();
     const lastName = $("#lastname").val();
+    const postalCode = $("#postal_code").val();
+    const address = $("#address").val();
+    const city = $("#city").val();
     const confirmPassword = $("#confirm_password").val();
     const messageDiv = document.getElementById("message");
 
     if (password.length < 8) {
-      messageDiv.innerHTML = "The password need to have 8 letters.";
+      messageDiv.innerHTML = "The password needs to have at least 8 characters.";
       messageDiv.className = "error-message";
       return;
     }
 
     if (password !== confirmPassword) {
-      messageDiv.innerHTML = "the password and the confirmation password do not match.";
+      messageDiv.innerHTML = "The password and the confirmation password do not match.";
       messageDiv.className = "error-message";
       return;
     }
 
-    if (!username || !email || !salutation || !firstName || !lastName) {
+    if (!username || !email || !salutation || !firstName || !lastName || !postalCode) {
       messageDiv.innerHTML = "Please fill in all required fields.";
       messageDiv.className = "error-message";
       return;
@@ -41,7 +42,10 @@ if (registerForm) {
       username,
       password,
       salutation,
-      confirm_password: confirmPassword
+      confirm_password: confirmPassword,
+      postal_code: postalCode,
+      address,
+      city
     };
 
     fetch("../../backend/api.php?user", {
@@ -51,18 +55,22 @@ if (registerForm) {
     })
       .then((res) => res.json())
       .then((data) => {
-        messageDiv.innerHTML = data.message;
-        messageDiv.className = data.status === "success" ? "success-message" : "error-message";
-
-        if (data.status === "success") {
+        const message = data.message || data.error || "Unknown response";
+        const isSuccess = data.status === "success" || (data.message && !data.error);
+        
+        messageDiv.innerHTML = message;
+        messageDiv.className = isSuccess ? "success-message" : "error-message";
+      
+        if (isSuccess) {
           setTimeout(() => {
-            window.location.href = "index.html";
+            window.location.href = "/PageTurner/PageTurner_Webshop/frontend/index.html";
           }, 2000);
         }
       })
-      .catch((err) => console.error("Erorr while registering user:", err));
+      .catch((err) => console.error("Error while registering user:", err));      
   });
 }
+
 
 // LOGIN
 const loginForm = document.getElementById("loginForm");
