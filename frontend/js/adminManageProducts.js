@@ -28,16 +28,16 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            alert(isEditing ? "✅ Produkt erfolgreich bearbeitet!" : "✅ Produkt erfolgreich erstellt!");
+            alert(isEditing ? "Product updated" : "New product created");
             hideCreateProductForm();
             loadProducts();
           } else {
-            alert("❌ Fehler: " + data.error);
+            alert("Error: " + data.error);
           }
         })
         .catch(err => {
-          console.error("❌ Netzwerkfehler:", err);
-          alert("Netzwerkfehler beim Senden der Daten!");
+          console.error("Network error:", err);
+          alert("network error while sending data!");
         });
     });
   }
@@ -52,7 +52,7 @@ function loadProducts() {
       tableBody.innerHTML = "";
 
       if (!Array.isArray(products) || products.length === 0) {
-        tableBody.innerHTML = "<tr><td colspan='7'>Keine Produkte gefunden.</td></tr>";
+        tableBody.innerHTML = "<tr><td colspan='7'>No products found.</td></tr>";
         return;
       }
 
@@ -66,36 +66,37 @@ function loadProducts() {
           <td>${product.rating != null ? parseFloat(product.rating).toFixed(1) : "-"}</td>
           <td>€${parseFloat(product.price).toFixed(2)}</td>
           <td>
-            <button class="btn btn-sm btn-warning" onclick="editProduct(${product.id})">✏️ Bearbeiten</button>
-            <button class="btn btn-sm btn-danger" onclick="deleteProduct(${product.id})">🗑️ Löschen</button>
+            <button class="btn btn-sm btn-warning" onclick="editProduct(${product.id})">✏️ Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteProduct(${product.id})">🗑️ Delete</button>
           </td>
         `;
         tableBody.appendChild(row);
       });
     })
     .catch(err => {
-      console.error("❌ Fehler beim Laden der Produkte:", err);
-      document.querySelector("#products-table tbody").innerHTML = "<tr><td colspan='7'>Fehler beim Laden der Produkte.</td></tr>";
+      console.error("Fehler beim Laden der Produkte:", err);
+      document.querySelector("#products-table tbody").innerHTML = "<tr><td colspan='7'>Error while loading products.</td></tr>";
     });
 }
 
 function deleteProduct(id) {
   const prefix = window.location.pathname.includes("/admin/") ? "../../" : "../";
-  if (!confirm("Willst du dieses Produkt wirklich löschen?")) return;
+  if (!confirm("Do you really want to delete this product?")) return;
 
   fetch(prefix + `backend/admin_product_api.php?deleteProduct=${id}`, { method: "DELETE" })
     .then(res => res.json())
     .then(data => {
       if (data.success) {
-        alert("✅ Produkt gelöscht!");
+        alert("Produkt gelöscht!");
         loadProducts();
       } else {
-        alert("❌ Fehler: " + data.error);
+        alert("Fehler: " + data.error);
       }
     })
     .catch(err => {
-      console.error("❌ Netzwerkfehler beim Löschen:", err);
-      alert("Netzwerkfehler beim Löschen!");
+      console.error("Network error while deleting product", err);
+      alert("Network error while deleting product", err);
+
     });
 }
 
@@ -114,8 +115,8 @@ function editProduct(id) {
       showCreateProductForm();
     })
     .catch(err => {
-      console.error("❌ Fehler beim Laden des Produkts zum Bearbeiten:", err);
-      alert("Produkt konnte nicht geladen werden.");
+      console.error("Error while editing product", err);
+      alert("Error while loading product");
     });
 }
 
@@ -126,9 +127,9 @@ function showCreateProductForm() {
   const imageInput = document.getElementById("productImage");
 
   if (form.dataset.editing === "true") {
-    imageInput.required = false; // 🔁 Bearbeiten: Bild nicht erforderlich
+    imageInput.required = false; // Bearbeiten: Bild nicht erforderlich
   } else {
-    imageInput.required = true;  // ➕ Erstellen: Bild ist Pflicht
+    imageInput.required = true;  // Erstellen: Bild ist Pflicht
   }
 }
 

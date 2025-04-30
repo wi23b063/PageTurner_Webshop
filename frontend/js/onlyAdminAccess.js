@@ -5,12 +5,12 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(res => res.json())
     .then(data => {
       if (!data.user || data.user.role !== "admin") {
-        alert("Zugriff verweigert. Nur für Administratoren.");
+        alert("Access denied. Only for admins allowed.");
         window.location.href = prefix + "index.html";
       }
     })
     .catch(err => {
-      console.error("⚠️ Session-Check fehlgeschlagen:", err);
+      console.error("Session-Check failed:", err);
       window.location.href = prefix + "index.html";
     });
 });

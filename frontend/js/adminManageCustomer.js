@@ -8,13 +8,13 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch(prefix + "backend/api.php?customers=1")
       .then(res => res.json())
       .then(customers => {
-        console.log("Kunden erhalten:", customers);
+        console.log("getting customers:", customers);
   
         const tableBody = document.querySelector("#customer-table tbody");
         tableBody.innerHTML = "";
   
         if (!Array.isArray(customers) || customers.length === 0) {
-          tableBody.innerHTML = "<tr><td colspan='5'>Keine Kunden gefunden.</td></tr>";
+          tableBody.innerHTML = "<tr><td colspan='5'>No customers found.</td></tr>";
           return;
         }
   
@@ -24,11 +24,11 @@ document.addEventListener("DOMContentLoaded", () => {
             <td>${customer.id}</td>
             <td>${customer.firstname} ${customer.lastname}</td>
             <td>${customer.email}</td>
-            <td>${customer.active === 'active' ? "Aktiv" : "Inaktiv"}</td>
+            <td>${customer.active === 'active' ? "active" : "inactive"}</td>
             <td>
               <button class="btn btn-sm ${customer.active === 'active' ? 'btn-danger' : 'btn-success'}" 
                 onclick="toggleCustomerStatus(${customer.id}, '${customer.active}')">
-                ${customer.active === 'active' ? "Deaktivieren" : "Aktivieren"}
+                ${customer.active === 'active' ? "disable Account" : "enable Account"}
 
               </button>
             </td>
@@ -37,9 +37,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       })
       .catch(err => {
-        console.error("❌ Fehler beim Laden der Kunden:", err);
+        console.error("Error while loading customers:", err);
         const tableBody = document.querySelector("#customer-table tbody");
-        tableBody.innerHTML = "<tr><td colspan='5'>Fehler beim Laden der Kunden.</td></tr>";
+        tableBody.innerHTML = "<tr><td colspan='5'>Error while loading customers.</td></tr>";
       });
   }
   
@@ -58,12 +58,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if (data.success) {
         loadCustomers(); // Nach erfolgreicher Änderung Tabelle neu laden
       } else {
-        alert("Fehler beim Ändern des Kundenstatus: " + data.error);
+        alert("Error while updating customer status: " + data.error);
       }
     })
     .catch(err => {
-      console.error("❌ Fehler beim Ändern des Status:", err);
-      alert("Netzwerkfehler beim Ändern des Status!");
+      console.error("Error while updating customer status: ", err);
+      alert("Network error while updating customer status.");
     });
   }
   

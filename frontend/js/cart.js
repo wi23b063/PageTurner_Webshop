@@ -130,9 +130,9 @@ function loadCartItems() {
         });
       })
       .catch(err => {
-        console.error("Fehler beim Laden des Warenkorbs:", err);
+        console.error("Error while loading cart:", err);
         document.getElementById("cart-items").innerHTML =
-          "<p>Fehler beim Laden des Warenkorbs.</p>";
+          "<p>Eror while loading cart.</p>";
       });
   });
 }
@@ -159,10 +159,10 @@ function removeFromCart(productId) {
         loadCartItems(); // Reload cart
         updateCartCountFromBackend(userId); // Update cart count at top
       } else {
-        alert("Fehler beim Entfernen des Produkts.");
+        alert("Error while removing from cart");
       }
     })
-    .catch(err => console.error("Fehler beim Entfernen aus dem Warenkorb:", err));
+    .catch(err => console.error("Error while removing from cart", err));
   });
 }
 
@@ -189,10 +189,10 @@ function changeCartQuantity(productId, change) {
         loadCartItems(); // Reload cart view
         updateCartCountFromBackend(userId); // Update cart icon at top
       } else {
-        alert("Fehler beim Aktualisieren der Menge.");
+        alert("Error while updating amount.");
       }
     })
-    .catch(err => console.error("Fehler beim Ändern der Menge:", err));
+    .catch(err => console.error("Error while updating amount", err));
   });
 }
 

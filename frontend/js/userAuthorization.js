@@ -17,19 +17,19 @@ if (registerForm) {
     const messageDiv = document.getElementById("message");
 
     if (password.length < 8) {
-      messageDiv.innerHTML = "Das Passwort muss mindestens 8 Zeichen lang sein.";
+      messageDiv.innerHTML = "The password need to have 8 letters.";
       messageDiv.className = "error-message";
       return;
     }
 
     if (password !== confirmPassword) {
-      messageDiv.innerHTML = "Die Passwörter stimmen nicht überein.";
+      messageDiv.innerHTML = "the password and the confirmation password do not match.";
       messageDiv.className = "error-message";
       return;
     }
 
     if (!username || !email || !salutation || !firstName || !lastName) {
-      messageDiv.innerHTML = "Bitte füllen Sie alle Pflichtfelder aus.";
+      messageDiv.innerHTML = "Please fill in all required fields.";
       messageDiv.className = "error-message";
       return;
     }
@@ -60,7 +60,7 @@ if (registerForm) {
           }, 2000);
         }
       })
-      .catch((err) => console.error("Fehler bei der Registrierung:", err));
+      .catch((err) => console.error("Erorr while registering user:", err));
   });
 }
 
@@ -102,7 +102,7 @@ if (loginForm) {
     })
     .catch(() => {
       if (messageDiv) {
-        messageDiv.textContent = "Ein Fehler ist aufgetreten.";
+        messageDiv.textContent = "An Error occurred while trying to login.";
         messageDiv.style.display = "block";
       }
     });
@@ -149,22 +149,22 @@ if (rememberedLogin) {
       ) {
         window.location.href = "../adminPanel.html";
       }
-      // ❗ Admin darf bleiben auf admin-Seiten!
+      //Admin darf bleiben auf admin-Seiten!
     } else {
-      // ❗ Kein Admin, aber versucht auf Admin-Seite zu gehen → Umleiten
+      //Kein Admin, aber versucht auf Admin-Seite zu gehen → Umleiten
       if (currentPage.includes("/admin/")) {
         window.location.href = "../index.html";
       }
     }
   } catch (e) {
-    console.error("❌ Fehler beim Lesen des rememberedLogin Cookies:", e);
+    console.error("Fehler beim Lesen des rememberedLogin Cookies:", e);
     setCookie("rememberedLogin", "", -1);
     if (currentPage.includes("/admin/")) {
       window.location.href = "../index.html";
     }
   }
 } else {
-  // ❗ Wenn rememberedLogin fehlt → Umleiten nur bei /admin/ Seiten
+  //Wenn rememberedLogin fehlt → Umleiten nur bei /admin/ Seiten
   if (currentPage.includes("/admin/")) {
     window.location.href = "../index.html";
   }
