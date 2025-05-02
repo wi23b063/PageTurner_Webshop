@@ -77,6 +77,23 @@ if ($method === "POST") {
             echo json_encode(["success" => true]);
             exit;
         }
+
+        if ($data["action"] === "clear_cart") {
+            $userId = intval($data["user_id"]);
+
+            // Delete all cart items for this user
+            $delete = $conn->prepare("DELETE FROM cart WHERE user_id = ?");
+            $delete->bind_param("i", $userId);
+            $delete->execute();
+
+            // Check if rows were affected (i.e., cart was actually cleared)
+            if ($delete->affected_rows > 0) {
+                echo json_encode(["success" => true]);
+            } else {
+                echo json_encode(["success" => false, "error" => "No items in the cart to clear"]);
+            }
+            exit;
+        }
     }
 }
 
@@ -115,4 +132,4 @@ if ($method === "GET" && $action === "get_cart_items") {
 // Fallback if no valid action
 echo json_encode(["success" => false, "error" => "Invalid action"]);
 exit;
-?>
+

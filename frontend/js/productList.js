@@ -54,7 +54,7 @@ function loadProducts(search = "") {
 
       const container = document.getElementById("product-list");
       if (!container) {
-        console.error("❌ Kein #product-list Container gefunden!");
+        console.error("Kein #product-list Container gefunden!");
         return;
       }
 
@@ -68,23 +68,23 @@ function loadProducts(search = "") {
       products.forEach((p) => {
         const ratingStars = p.rating
           ? "⭐".repeat(Math.round(p.rating)) + ` (${p.rating})`
-          : "Keine Bewertung";
+          : "No ratings";
 
         container.innerHTML += `
           <div class="product">
             <h3>${p.product_name}</h3>
             <p><strong>Preis:</strong> €${parseFloat(p.price).toFixed(2)}</p>
             <p><strong>Bewertung:</strong> ${ratingStars}</p>
-            <button class="button" onclick="addToCart(${p.id})">🛒 In den Warenkorb</button>
+            <button class="button" onclick="addToCart(${p.id})">🛒 Add to Cart</button>
           </div>
         `;
       });
     })
     .catch((err) => {
-      console.error("❌ Fehler beim Laden der Produkte:", err);
+      console.error("Fehler beim Laden der Produkte:", err);
       const container = document.getElementById("product-list");
       if (container) {
-        container.innerHTML = "<p>Fehler beim Laden der Produkte.</p>";
+        container.innerHTML = "<p>Error loading the products.</p>";
       }
     });
 }
