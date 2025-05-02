@@ -7,26 +7,88 @@
     <link rel="stylesheet" href="../res/css/style.css">
 
     <title>Registration</title>
-    <style>
-        .error-message { color: red; }
-        .success-message { color: green; }
-        .button {
-        background-color: #d1bfa5;
-        color: #1c120a;
-        font-family: 'Georgia', serif;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.4px;
-        padding: 8px 16px;
-        border: none;
-        border-radius: 999px;
-        cursor: pointer;
-        transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        font-weight: bold;
+    <style>      
+        h2 {
+            text-align: center;
         }
-
-    </style>
+      
+        form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            margin: 30px auto; /* zentriert das Formular */
+        }
+      
+        form label {
+            font-size: 1rem;
+            color: #2c2c2c;
+            margin-bottom: 5px;
+            display: block;
+        }
+      
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 4px;
+            border: 1px solid #d1bfa5;
+            font-size: 1rem;
+        }
+      
+        input[type="text"], input[type="email"], input[type="password"] {
+            box-sizing: border-box;
+        }
+      
+        input:focus, select:focus, button:focus {
+            outline: none;
+            border-color: #bfa88c;
+            box-shadow: 0 0 5px rgba(191, 168, 140, 0.4);
+        }
+      
+        .select-style {
+            appearance: none;
+            background-color: #fdfaf6;
+            color: #2c2c2c;
+            font-family: 'Georgia', serif;
+            font-size: 0.95rem;
+            padding: 10px 14px;
+            border: 1px solid #d1bfa5;
+            border-radius: 8px;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: border-color 0.3s ease;
+        }
+      
+        .select-style:focus {
+            border-color: #bfa88c;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(191, 168, 140, 0.3);
+        }
+      
+        /* Erfolgsmeldungen und Fehlernachrichten */
+        .error-message {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            margin-top: 10px;
+        }
+      
+        .success-message {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            margin-top: 10px;
+        }
+      </style>      
 </head>
 <body>
 
@@ -60,18 +122,24 @@
     
         <label for="confirm_password">Confirm password</label>
         <input type="password" name="confirm_password" id="confirm_password" minlength="8" required><br>
+
+        <label for="postal_code">Postal Code</label>
+        <input type="text" name="postal_code" id="postal_code" required maxlength="4" pattern="\d{4}" title="Postal Code must be exactly 4 digits"><br>
+    
+        <label for="city">City</label>
+        <input type="text" name="city" id="city" required><br>
+    
+        <label for="address">Address</label>
+        <input type="text" name="address" id="address" required>
     
         <button class="button" type="submit">Submit</button>
     </form>
     
     <div id="message"></div>
-    
 
     <footer></footer>
 
     <script src="../js/includeParts.js"></script>
-    
+
 </body>
-
-
 </html>

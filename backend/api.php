@@ -82,14 +82,19 @@ class Api {
     }
 
     private function processPost() {
-        $data = json_decode(file_get_contents("php://input"));
+        $input = file_get_contents("php://input");
+        $data = json_decode($input);
     
-        // 🔐 Login flow
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $this->error(400, [], "Ungültiges JSON: " . json_last_error_msg());
+        }
+    
+        // Login
         if (isset($_GET["login"])) {
             $result = $this->userService->login($data);
             if ($result["success"]) {
                 $this->success(200, [
-                    "message" => "Login successful",
+                    "message" => "Login erfolgreich",
                     "user" => [
                         "id" => $_SESSION['user_id'],
                         "username" => $_SESSION['user'],
@@ -104,8 +109,30 @@ class Api {
             }
         }
     
-        // 📝 Registration flow
+        // Registrierung
         else if (isset($_GET["user"])) {
+            if (!$data || !is_object($data)) {
+                $this->error(400, [], "Fehlerhafte Eingabedaten.");
+            }
+    
+            // Pflichtfeld-Validierung
+            $requiredFields = ["salutation", "firstname", "lastname", "email", "username", "password", "confirm_password", "postal_code", "city", "address"];
+            $missing = [];
+    
+            foreach ($requiredFields as $field) {
+                if (empty($data->$field)) {
+                    $missing[] = $field;
+                }
+            }
+    
+            if (!empty($missing)) {
+                $this->error(400, [], "Fehlende Felder: " . implode(", ", $missing));
+            }
+    
+            if ($data->password !== $data->confirm_password) {
+                $this->error(400, [], "Passwörter stimmen nicht überein.");
+            }
+    
             $errors = $this->userService->validateUserData($data);
             if (!empty($errors)) {
                 $this->error(400, [], implode(" ", $errors));
@@ -113,16 +140,16 @@ class Api {
     
             try {
                 $newUserId = $this->userService->register($data);
-                $this->success(201, ["message" => "User created", "user_id" => $newUserId]);
+                $this->success(201, ["message" => "Benutzer erfolgreich registriert", "user_id" => $newUserId]);
             } catch (Exception $e) {
-                $this->error(400, [], $e->getMessage());
+                $this->error(400, [], "Registrierung fehlgeschlagen: " . $e->getMessage());
             }
         }
     
-        // ✨ Kundenstatus ändern (aktivieren/deaktivieren)
+        // Kundenstatus ändern
         else if (isset($_GET["updateCustomerStatus"])) {
             if (!isset($data->id) || !isset($data->newStatus)) {
-                $this->error(400, [], "Ungültige Daten");
+                $this->error(400, [], "Ungültige Daten zur Statusänderung.");
             }
     
             $conn = getDbConnection();
@@ -140,11 +167,12 @@ class Api {
             }
         }
     
-        // 🤷‍♂️ Unknown POST request
+        //Unbekannter Pfad
         else {
-            $this->error(400, [], "Bad Request - unknown path: " . http_build_query($_GET));
+            $this->error(400, [], "Unbekannter POST-Endpunkt: " . http_build_query($_GET));
         }
     }
+    
     
 
     private function processDelete() {
