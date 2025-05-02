@@ -1,6 +1,6 @@
-function addToCart(productId) {
+async function addToCart(productId) {
   // Check if user is logged in
-  const userId = getLoggedInUserId() || 0;  // Default to 0 if not logged in
+  const userId = await getLoggedInUserId() || 0;  // Default to 0 if not logged in
 
   fetch("/PageTurner/PageTurner_Webshop/backend/cart_api.php", {
     method: "POST",
@@ -16,9 +16,14 @@ function addToCart(productId) {
   })
   .then(res => res.json())
   .then(data => {
+    if (userId===0) {
+      alert("Sie sind nicht angemeldet. Bitte melden Sie sich an, um den Warenkorb zu verwenden.");
+      return;
+    }
     if (data.success) {
       updateCartCountFromBackend(userId); // Update cart count
-      alert("Produkt wurde dem Warenkorb hinzugefügt!");
+      console.log("Produkt reingelegt als UserID:", userId);
+      alert("Produkt wurde dem Warenkorb hinzugefügt! ");
     } else {
       alert("Fehler: " + (data.error || "Unbekannter Fehler"));
     }
@@ -49,6 +54,7 @@ function getLoggedInUserId() {
     .then(res => res.json())
     .then(data => data.user_id)
     .catch(err => {
+      
       console.error("Fehler beim Abrufen der User-ID:", err);
       return null;
     });
