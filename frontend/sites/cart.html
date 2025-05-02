@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <title>Warenkorb</title>
+    <title>Cart</title>
     <link rel="stylesheet" href="../res/css/style.css" />
     <link rel="stylesheet" href="../res/css/cart_style.css">
     
@@ -14,7 +14,7 @@
     <header></header>
 
     <div class="cart-container">
-        <h2>Ihr Warenkorb</h2>
+        <h2>Your Cart</h2>
 
         <div id="cart-items" class="cart-grid">
             <!-- Produkte werden hier eingefügt -->
@@ -22,13 +22,13 @@
 
         <div class="cart-summary">
             <div class="input-container">
-                <input type="text" id="coupon-code" placeholder="Geben Sie Ihren Rabattcode ein" />
-                <button class="button" id="apply-coupon">Use coupon</button>
+                <input type="text" id="coupon-code" placeholder="Enter coupon-code" />
+                <button class="button" id="apply-coupon">Apply</button>
             </div>
             <br><br>
 
-            <p><span id="cart-item-count">0</span> Artikel</p>
-            <p>Gesamtsumme: <span id="cart-total-amount">0,00€</span></p>
+            <p><span id="cart-item-count">0</span> Articles</p>
+            <p>Total: <span id="cart-total-amount">0,00€</span></p>
 
             <button class="button" id="payment-button">Pay now</button>
         </div>
@@ -37,6 +37,7 @@
     <footer></footer>
     <script src="../js/includeParts.js" defer></script>
     <script src="../js/cart.js" defer></script>
+    <script src="../js/order.js"></script>
 
 </body>
 </html>

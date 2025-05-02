@@ -17,13 +17,13 @@ async function addToCart(productId) {
   .then(res => res.json())
   .then(data => {
     if (userId===0) {
-      alert("Sie sind nicht angemeldet. Bitte melden Sie sich an, um den Warenkorb zu verwenden.");
+      alert("You are currently not logged in. Please log in to access the cart.");
       return;
     }
     if (data.success) {
       updateCartCountFromBackend(userId); // Update cart count
       console.log("Produkt reingelegt als UserID:", userId);
-      alert("Produkt wurde dem Warenkorb hinzugefügt! ");
+      alert("Item has been added to cart!");
     } else {
       alert("Fehler: " + (data.error || "Unbekannter Fehler"));
     }
@@ -78,7 +78,7 @@ function loadCartItems() {
         container.innerHTML = "";
 
         if (!Array.isArray(cartItems) || cartItems.length === 0) {
-          container.innerHTML = "<p>Ihr Warenkorb ist leer.</p>";
+          container.innerHTML = "<p>Your cart is empty.</p>";
           const totalAmountElement = document.getElementById("cart-total-amount");
           const cartItemCountElement = document.getElementById("cart-item-count");
           if (totalAmountElement) totalAmountElement.textContent = "0,00€";
