@@ -1,20 +1,24 @@
 <?php
 require_once(__DIR__ . '/../inc/dbaccess.php');
-function getProducts($search = "") {
+function getProducts($search = "", $categoryId = null) {
     $conn = getDbConnection();
 
     $sql = "
     SELECT p.*, c.category_name
     FROM products p
     LEFT JOIN categories c ON p.category_id = c.id
+    WHERE 1=1
     ";
 
     if (!empty($search)) {
-        $sql .= " WHERE p.product_name LIKE '%" . $conn->real_escape_string($search) . "%'";
+        $searchEscaped = $conn->real_escape_string($search);
+        $sql .= " AND p.product_name LIKE '%$searchEscaped%'";
     }
 
-    // No GROUP BY unless needed
-    // $sql .= " GROUP BY p.id"; // remove for now
+    if (!empty($categoryId)) {
+        $categoryId = intval($categoryId);
+        $sql .= " AND p.category_id = $categoryId";
+    }
 
     $result = $conn->query($sql);
 
@@ -30,4 +34,5 @@ function getProducts($search = "") {
 
     return $products;
 }
+
 

@@ -1,6 +1,6 @@
 <?php
+require_once("inc/dbaccess.php");
 require_once("logic/productAdminService.php");
-
 
 header("Content-Type: application/json");
 
@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["getProduct"])) {
     try {
         $id = intval($_GET["getProduct"]);
         $conn = getDbConnection();
-        $stmt = $conn->prepare("SELECT id, product_name, description, price, rating, image_url FROM products WHERE id = ?");
+        $stmt = $conn->prepare("SELECT id, product_name, description, price, rating, image_url, category_id FROM products WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -41,14 +41,11 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["getProduct"])) {
     exit;
 }
 
-
-
-
 //update Produkt (POST)
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_GET["updateProduct"])) {
     try {
         $id = intval($_GET["updateProduct"]);
-        if (!$id || !isset($_POST['productName'], $_POST['productDescription'], $_POST['productPrice'], $_POST['productRating'])) {
+        if (!$id || !isset($_POST['productName'], $_POST['productDescription'], $_POST['productPrice'], $_POST['productRating'], $_POST['productCategory'])) {
             throw new Exception("Fehlende Felder für Update.");
         }
 
@@ -56,6 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_GET["updateProduct"])) {
         $description = $_POST['productDescription'];
         $price = floatval($_POST['productPrice']);
         $rating = floatval($_POST['productRating']);
+        $categoryId = intval($_POST['productCategory']);
 
         $conn = getDbConnection();
 
@@ -71,11 +69,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_GET["updateProduct"])) {
                 throw new Exception("Bild-Upload fehlgeschlagen.");
             }
 
-            $stmt = $conn->prepare("UPDATE products SET product_name = ?, description = ?, price = ?, rating = ?, image_url = ? WHERE id = ?");
-            $stmt->bind_param("ssdssi", $productName, $description, $price, $rating, $filename, $id);
+            $stmt = $conn->prepare("UPDATE products SET product_name = ?, description = ?, price = ?, rating = ?, image_url = ?, category_id = ? WHERE id = ?");
+            $stmt->bind_param("ssds sii", $productName, $description, $price, $rating, $filename, $categoryId, $id);
         } else {
-            $stmt = $conn->prepare("UPDATE products SET product_name = ?, description = ?, price = ?, rating = ? WHERE id = ?");
-            $stmt->bind_param("ssdsi", $productName, $description, $price, $rating, $id);
+            $stmt = $conn->prepare("UPDATE products SET product_name = ?, description = ?, price = ?, rating = ?, category_id = ? WHERE id = ?");
+            $stmt->bind_param("ssdsii", $productName, $description, $price, $rating, $categoryId, $id);
         }
 
         if ($stmt->execute()) {
@@ -89,8 +87,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_GET["updateProduct"])) {
     }
     exit;
 }
-
-
 
 // Produkt löschen (DELETE)
 if ($_SERVER["REQUEST_METHOD"] === "DELETE" && isset($_GET["deleteProduct"])) {
@@ -113,7 +109,7 @@ if ($_SERVER["REQUEST_METHOD"] === "DELETE" && isset($_GET["deleteProduct"])) {
 // Produkt erstellen (POST)
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_GET["createProduct"])) {
     try {
-        if (!isset($_POST['productName'], $_POST['productDescription'], $_POST['productPrice'], $_POST['productRating'], $_FILES['productImage'])) {
+        if (!isset($_POST['productName'], $_POST['productDescription'], $_POST['productPrice'], $_POST['productRating'], $_POST['productCategory'], $_FILES['productImage'])) {
             throw new Exception("Fehlende Daten für das Erstellen eines Produkts.");
         }
 
@@ -121,6 +117,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_GET["createProduct"])) {
         $description = $_POST['productDescription'];
         $price = floatval($_POST['productPrice']);
         $rating = floatval($_POST['productRating']);
+        $categoryId = intval($_POST['productCategory']);
 
         // Bild-Upload
         $uploadDir = __DIR__ . "/productpictures/";
@@ -136,7 +133,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_GET["createProduct"])) {
         }
 
         // Produkt speichern
-        createProduct($productName, $description, $price, $rating, $filename);
+        createProduct($productName, $description, $price, $rating, $filename, $categoryId);
         echo json_encode(["success" => true]);
     } catch (Exception $e) {
         http_response_code(500);
