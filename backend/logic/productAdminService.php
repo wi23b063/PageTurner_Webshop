@@ -45,12 +45,12 @@ function deleteProduct($id) {
     }
 }
 
-function createProduct($name, $description, $price, $rating, $imageFilename) {
+function createProduct($name, $description, $price, $rating, $imageFilename, $categoryId) {
     $conn = getDbConnection();
 
-    $stmt = $conn->prepare("INSERT INTO products (product_name, description, price, rating, image_url) VALUES (?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO products (product_name, description, price, rating, image_url, category_id) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssds si", $name, $description, $price, $rating, $imageFilename, $categoryId);
 
-    $stmt->bind_param("ssdss", $name, $description, $price, $rating, $imageFilename);
 
     if (!$stmt->execute()) {
         throw new Exception("Produkt konnte nicht gespeichert werden: " . $conn->error);

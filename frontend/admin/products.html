@@ -47,6 +47,15 @@
           <label for="productImage" class="form-label">Bild</label>
           <input type="file" class="form-control" id="productImage" accept="image/*">
         </div>
+        
+        <div class="mb-3">
+          <label for="productCategory" class="form-label">Kategorie</label>
+          <select class="form-select" id="productCategory" required>
+            <option value="">Bitte wählen</option>
+            <!-- Wird per JS befüllt -->
+          </select>
+        </div>
+        
         <button type="submit" class="btn btn-success">Produkt speichern</button>
         <button type="button" class="btn btn-secondary" onclick="hideCreateProductForm()">Abbrechen</button>
       </form>

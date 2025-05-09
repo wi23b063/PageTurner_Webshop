@@ -1,10 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
+  loadCategories();
   loadProducts();
 
   const productForm = document.getElementById("newProductForm");
   if (productForm) {
     productForm.addEventListener("submit", function (e) {
       e.preventDefault();
+
       const prefix = window.location.pathname.includes("/admin/") ? "../../" : "../";
       const isEditing = productForm.dataset.editing === "true";
       const productId = productForm.dataset.productId;
@@ -14,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
       formData.append("productDescription", document.getElementById("productDescription").value);
       formData.append("productPrice", document.getElementById("productPrice").value);
       formData.append("productRating", document.getElementById("productRating").value);
+      formData.append("productCategory", document.getElementById("productCategory").value);
       const image = document.getElementById("productImage").files[0];
       if (image) formData.append("productImage", image);
 
@@ -28,20 +31,40 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            alert(isEditing ? "Product updated" : "New product created");
+            alert(isEditing ? "Produkt aktualisiert" : "Neues Produkt erstellt");
             hideCreateProductForm();
             loadProducts();
           } else {
-            alert("Error: " + data.error);
+            alert("Fehler: " + data.error);
           }
         })
         .catch(err => {
-          console.error("Network error:", err);
-          alert("network error while sending data!");
+          console.error("Netzwerkfehler:", err);
+          alert("Netzwerkfehler beim Senden der Daten!");
         });
     });
   }
 });
+
+function loadCategories() {
+  const prefix = window.location.pathname.includes("/admin/") ? "../../" : "../";
+  fetch(prefix + "backend/product_api.php?categories=1")
+    .then(res => res.json())
+    .then(categories => {
+      const select = document.getElementById("productCategory");
+      if (!select) return;
+      select.innerHTML = '<option value="">Bitte wählen</option>';
+      categories.forEach(cat => {
+        const option = document.createElement("option");
+        option.value = cat.id;
+        option.textContent = cat.category_name;
+        select.appendChild(option);
+      });
+    })
+    .catch(err => {
+      console.error("Fehler beim Laden der Kategorien:", err);
+    });
+}
 
 function loadProducts() {
   const prefix = window.location.pathname.includes("/admin/") ? "../../" : "../";
@@ -52,7 +75,7 @@ function loadProducts() {
       tableBody.innerHTML = "";
 
       if (!Array.isArray(products) || products.length === 0) {
-        tableBody.innerHTML = "<tr><td colspan='7'>No products found.</td></tr>";
+        tableBody.innerHTML = "<tr><td colspan='7'>Keine Produkte gefunden.</td></tr>";
         return;
       }
 
@@ -66,8 +89,8 @@ function loadProducts() {
           <td>${product.rating != null ? parseFloat(product.rating).toFixed(1) : "-"}</td>
           <td>€${parseFloat(product.price).toFixed(2)}</td>
           <td>
-            <button class="btn btn-sm btn-warning" onclick="editProduct(${product.id})">✏️ Edit</button>
-            <button class="btn btn-sm btn-danger" onclick="deleteProduct(${product.id})">🗑️ Delete</button>
+            <button class="btn btn-sm btn-warning" onclick="editProduct(${product.id})">✏️ Bearbeiten</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteProduct(${product.id})">🗑️ Löschen</button>
           </td>
         `;
         tableBody.appendChild(row);
@@ -75,13 +98,13 @@ function loadProducts() {
     })
     .catch(err => {
       console.error("Fehler beim Laden der Produkte:", err);
-      document.querySelector("#products-table tbody").innerHTML = "<tr><td colspan='7'>Error while loading products.</td></tr>";
+      document.querySelector("#products-table tbody").innerHTML = "<tr><td colspan='7'>Fehler beim Laden.</td></tr>";
     });
 }
 
 function deleteProduct(id) {
   const prefix = window.location.pathname.includes("/admin/") ? "../../" : "../";
-  if (!confirm("Do you really want to delete this product?")) return;
+  if (!confirm("Willst du dieses Produkt wirklich löschen?")) return;
 
   fetch(prefix + `backend/admin_product_api.php?deleteProduct=${id}`, { method: "DELETE" })
     .then(res => res.json())
@@ -94,9 +117,8 @@ function deleteProduct(id) {
       }
     })
     .catch(err => {
-      console.error("Network error while deleting product", err);
-      alert("Network error while deleting product", err);
-
+      console.error("Fehler beim Löschen:", err);
+      alert("Netzwerkfehler beim Löschen!");
     });
 }
 
@@ -109,14 +131,15 @@ function editProduct(id) {
       document.getElementById("productDescription").value = product.description;
       document.getElementById("productPrice").value = product.price;
       document.getElementById("productRating").value = product.rating;
+      document.getElementById("productCategory").value = product.category_id;
       const form = document.getElementById("newProductForm");
       form.dataset.editing = "true";
       form.dataset.productId = id;
       showCreateProductForm();
     })
     .catch(err => {
-      console.error("Error while editing product", err);
-      alert("Error while loading product");
+      console.error("Fehler beim Laden des Produkts:", err);
+      alert("Produkt konnte nicht geladen werden.");
     });
 }
 
@@ -127,12 +150,11 @@ function showCreateProductForm() {
   const imageInput = document.getElementById("productImage");
 
   if (form.dataset.editing === "true") {
-    imageInput.required = false; // Bearbeiten: Bild nicht erforderlich
+    imageInput.required = false;
   } else {
-    imageInput.required = true;  // Erstellen: Bild ist Pflicht
+    imageInput.required = true;
   }
 }
-
 
 function hideCreateProductForm() {
   const form = document.getElementById("newProductForm");
@@ -141,5 +163,4 @@ function hideCreateProductForm() {
   form.removeAttribute("data-product-id");
   document.getElementById("create-product-form").style.display = "none";
   document.getElementById("productImage").required = true;
-
 }
