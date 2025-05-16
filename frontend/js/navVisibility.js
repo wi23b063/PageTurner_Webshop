@@ -40,12 +40,24 @@ function updateNavbarVisibility() {
       return;
     }
 
+    const profileLi = document.getElementById("nav-profile");
+
+  if (!cookie) {
+  // Hide profile button when not logged in
+  if (profileLi) profileLi.style.display = "none";
+  } else {
+  // Show profile button when logged in
+  if (profileLi) profileLi.style.display = "inline-block";
+  }
+
+
 
     //HIER BItte weiter Navi Manipulation einssetzten 
     //Für AdminPanel wird noch erstellt
   
    
   }
+  
   
  
   

@@ -157,4 +157,79 @@ class UserService {
         $stmt->bind_param("i", $user['id']);
         return $stmt->execute();
     }
+
+    public function updateProfile($userId, $data) {
+    $user = $this->findByID($userId);
+    if (!$user) {
+        throw new Exception("User not found.");
+    }
+
+    $allowedFields = [
+        'salutation' => 's',
+        'firstname' => 's',
+        'lastname' => 's',
+        'email' => 's',
+        'username' => 's',
+        'postal_code' => 's',
+        'city' => 's',
+        'address' => 's',
+    ];
+
+    $fieldsToUpdate = [];
+    $params = [];
+    $types = '';
+
+    // For password handling (optional)
+    $hashedPassword = $user['password'];
+    if (!empty($data->password)) {
+        if (empty($data->old_password) || !password_verify($data->old_password, $user['password'])) {
+            throw new Exception("Old password incorrect.");
+        }
+        if ($data->password !== ($data->confirm_password ?? '')) {
+            throw new Exception("Passwords do not match.");
+        }
+        $hashedPassword = password_hash($data->password, PASSWORD_DEFAULT);
+    }
+
+    foreach ($allowedFields as $field => $type) {
+        if (property_exists($data, $field) && $data->$field !== null && $data->$field !== '') {
+            if ($field === "email") {
+                if (!filter_var($data->$field, FILTER_VALIDATE_EMAIL)) {
+                    throw new Exception("Invalid email format.");
+                }
+            }
+            $fieldsToUpdate[] = "$field = ?";
+            $params[] = $data->$field;
+            $types .= $type;
+        } else {
+            // keep old value if not provided or empty
+            $fieldsToUpdate[] = "$field = ?";
+            $params[] = $user[$field];
+            $types .= $type;
+        }
+    }
+
+    // Add password field to update
+    $fieldsToUpdate[] = "password = ?";
+    $params[] = $hashedPassword;
+    $types .= 's';
+
+    $params[] = $userId;
+    $types .= 'i';
+
+    $sql = "UPDATE users SET " . implode(", ", $fieldsToUpdate) . " WHERE id = ?";
+
+    $stmt = $this->conn->prepare($sql);
+    if (!$stmt) {
+        throw new Exception("Prepare failed: " . $this->conn->error);
+    }
+
+    $stmt->bind_param($types, ...$params);
+
+    if (!$stmt->execute()) {
+        throw new Exception("Profile update failed: " . $stmt->error);
+    }
+
+    return true;
 }
+};

@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 
 require_once("inc/dbaccess.php");
 include_once("models/user.class.php");
@@ -53,20 +57,17 @@ class Api {
                 $this->error(404, [], "No such user with ID $id");
             }
             $this->success(200, $user);
-        } else if (isset($_GET["checkSession"])) {
-            if (isset($_SESSION['user'])) {
-                $this->success(200, [
-                    "user" => [
-                        "id" => $_SESSION['user_id'],
-                        "username" => $_SESSION['user'],
-                        "firstname" => $_SESSION['firstname'],
-                        "lastname" => $_SESSION['lastname'],
-                        "role" => $_SESSION['role']
-                    ]
-                ]);
-            } else {
-                $this->success(200, ["user" => null]);
-            }
+        } else if (array_key_exists("checkSession", $_GET)) {
+            if (isset($_SESSION['user_id'])) {
+                $user = $this->userService->findByID($_SESSION['user_id']);
+                if ($user) {
+                    // remove password before sending
+                    unset($user['password']);
+                    $this->success(200, ["user" => $user]);
+                } else {
+                    $this->error(404, [], "User not found.");
+                }
+            }            
         } 
         else if (isset($_GET["customers"])) { //  Kundenverwaltung
             try {
@@ -166,6 +167,48 @@ class Api {
                 $this->error(500, [], "Fehler beim Update: " . $conn->error);
             }
         }
+
+        // Profil aktualisieren
+else if (isset($_GET["updateProfile"])) {
+    if (!isset($_SESSION['user_id'])) {
+        $this->error(401, [], "Nicht angemeldet.");
+    }
+
+    $userId = $_SESSION['user_id'];
+
+    // Read JSON input
+    $data = json_decode(file_get_contents('php://input'));
+
+    if (!$data || !is_object($data)) {
+        $this->error(400, [], "Ungültige Eingabedaten.");
+    }
+
+    // Allow empty email, so set null or empty string for validation
+    $email = property_exists($data, 'email') ? trim($data->email) : '';
+    if ($email === '') {
+        $data->email = null;  // Or '' depending on your backend logic
+    }
+
+    // (Optional) Sanitize or normalize other fields if needed...
+
+    try {
+        $updated = $this->userService->updateProfile($userId, $data);
+
+        if ($updated) {
+            $this->success(200, [
+                "status" => "success",
+                "message" => "Profil erfolgreich aktualisiert"
+            ]);
+        } else {
+            $this->error(500, [], "Aktualisierung fehlgeschlagen.");
+        }
+    } catch (Exception $e) {
+        // Return JSON error instead of HTML fatal error page
+        $this->error(400, [], "Fehler bei der Aktualisierung: " . $e->getMessage());
+    }
+}
+
+
     
         //Unbekannter Pfad
         else {
