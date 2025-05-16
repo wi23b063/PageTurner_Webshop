@@ -1,10 +1,11 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  console.log("profile.js script loaded");
   try {
     const response = await fetch('../../backend/api.php?checkSession');
     const data = await response.json();
 
-    if (data.status === 'success' && data.user) {
-      // Prefill fields (leave out passwords)
+    if (data.user) {
+      // Prefill form inputs except password fields
       document.getElementById('firstname').value = data.user.firstname || '';
       document.getElementById('lastname').value = data.user.lastname || '';
       document.getElementById('username').value = data.user.username || '';
@@ -12,13 +13,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById('address').value = data.user.address || '';
       document.getElementById('city').value = data.user.city || '';
       document.getElementById('postal_code').value = data.user.postal_code || '';
-      // Password fields remain empty
-      document.getElementById('current_password').value = '';
-      document.getElementById('password').value = '';
-      console.log("Form fields prefilling complete");
     }
-  } catch (err) {
-    console.error('Error fetching session data:', err);
+  } catch (error) {
+    console.error('Error fetching session data:', error);
   }
 });
 
