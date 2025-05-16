@@ -27,7 +27,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (typeof updateNavbarVisibility === "function") {
         updateNavbarVisibility();
       }
-
+    
+      // Add redirect to login page
       const loginBtn = document.getElementById("login");
       if (loginBtn) {
         const redirectPrefix = path.includes("/sites/") || path.includes("/admin/") ? "" : "sites/";
@@ -35,7 +36,17 @@ document.addEventListener("DOMContentLoaded", async () => {
           window.location.href = `${redirectPrefix}userLogin.html`;
         });
       }
+    
+      // redirect to profile page
+      const profileBtn = document.getElementById("userProfile");
+      if (profileBtn) {
+        profileBtn.addEventListener("click", () => {
+          const redirectPrefix = path.includes("/sites/") || path.includes("/admin/") ? "" : "sites/";
+          window.location.href = `${redirectPrefix}userAccount.html`;
+        });
+      }
     }, 50);
+    
 
     await loadScript(`${prefix}js/userAuthorization.js`);
     

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="../res/css/style.css" />
+  <link rel="stylesheet" href="../res/css/form_style.css">
+  <script src="../js/includeParts.js" defer></script>
+  <title>My Profile</title>
+</head>
+<body>
+    <header></header>
+
+  <h2>My Profile</h2>
+
+  <form id="profileForm">
+    <label>Firstname: <input type="text" id="firstname" /></label><br />
+    <label>Lastname: <input type="text" id="lastname" /></label><br />
+    <label>Username: <input type="text" id="username" /></label><br />
+    <label>Email: <input type="email" id="email" /></label><br />
+    <label>Address: <input type="text" id="address" /></label><br />
+    <label>City: <input type="text" id="city" /></label><br />
+    <label>Postal Code: <input type="text" id="postal_code" /></label><br />
+
+    <br>
+    
+    <!-- New field for old password -->
+    <label>Current Password: <input type="password" id="current_password" placeholder="Enter your current password" required /></label><br />
+    
+    <!-- Password field to change password -->
+    <label>New Password: <input type="password" id="password" placeholder="Enter new password" /></label><br />
+
+    <button type="submit">Update Profile</button>
+  </form>  
+
+  <div id="message"></div>
+
+  <footer></footer>
+
+  <script src="../js/profile.js"></script>
+</body>
+</html>
