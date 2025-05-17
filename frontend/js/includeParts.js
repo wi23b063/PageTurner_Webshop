@@ -49,6 +49,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     
 
     await loadScript(`${prefix}js/userAuthorization.js`);
+    await loadScript(`${prefix}js/userGreeting.js`);
+
     
 
   } catch (e) {
