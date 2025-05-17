@@ -19,22 +19,25 @@ document.addEventListener("DOMContentLoaded", () => {
         }
   
         customers.forEach(customer => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${customer.id}</td>
-            <td>${customer.firstname} ${customer.lastname}</td>
-            <td>${customer.email}</td>
-            <td>${customer.active === 'active' ? "active" : "inactive"}</td>
-            <td>
-              <button class="btn btn-sm ${customer.active === 'active' ? 'btn-danger' : 'btn-success'}" 
-                onclick="toggleCustomerStatus(${customer.id}, '${customer.active}')">
-                ${customer.active === 'active' ? "disable Account" : "enable Account"}
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${customer.id}</td>
+          <td>${customer.firstname} ${customer.lastname}</td>
+          <td>${customer.email}</td>
+          <td>${customer.active === 'active' ? "active" : "inactive"}</td>
+          <td>
+            <button class="btn btn-sm ${customer.active === 'active' ? 'btn-danger' : 'btn-success'}" 
+              onclick="toggleCustomerStatus(${customer.id}, '${customer.active}')">
+              ${customer.active === 'active' ? "disable Account" : "enable Account"}
+            </button>
+            <a href="orders.html?customerId=${customer.id}" class="btn btn-info btn-sm ms-2">
+             Manage Order
+            </a>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
 
-              </button>
-            </td>
-          `;
-          tableBody.appendChild(row);
-        });
       })
       .catch(err => {
         console.error("Error while loading customers:", err);
