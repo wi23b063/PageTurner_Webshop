@@ -69,6 +69,7 @@ class Api {
                 }
             }            
         } 
+        
         else if (isset($_GET["customers"])) { //  Kundenverwaltung
             try {
                 $customers = getCustomers(); // Holt alle Kunden (ohne Admins)
@@ -77,6 +78,14 @@ class Api {
                 $this->error(500, [], "Fehler beim Laden der Kunden: " . $e->getMessage());
             }
         }
+
+        else if (isset($_GET["logout"])) {
+            session_start();
+            session_unset();
+            session_destroy();
+            $this->success(200, ["message" => "Logout erfolgreich"]);
+        }
+
         else {
             $this->error(400, [], "Bad Request - invalid parameters: " . http_build_query($_GET));
         }
