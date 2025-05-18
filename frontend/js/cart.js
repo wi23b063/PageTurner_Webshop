@@ -16,10 +16,10 @@ async function addToCart(productId) {
   })
   .then(res => res.json())
   .then(data => {
-    if (userId===0) {
-      alert("You are currently not logged in. Please log in to access the cart.");
-      return;
+    if (userId === 0) {
+      alert("You added the item as a guest. Log in to save your cart.");
     }
+
     if (data.success) {
       updateCartCountFromBackend(userId); // Update cart count
       console.log("Produkt reingelegt als UserID:", userId);
@@ -61,7 +61,10 @@ function getLoggedInUserId() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  loadCartItems();
+  // Only load cart items if we're on cart.html
+  if (window.location.pathname.endsWith("cart.html")) {
+    loadCartItems();
+  }
 });
 
 
