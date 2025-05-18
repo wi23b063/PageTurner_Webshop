@@ -17,7 +17,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     // Header und Footer einfügen
-    await includeHTML("header", headerFile);
+    await includeHTML("header", headerFile).then(() => {
+    const cartCountEl = document.getElementById("cart-count");
+
+    if (typeof updateCartCountFromBackend === "function" && cartCountEl) {
+      getLoggedInUserId().then(userId => {
+        if (!userId) userId = 0;
+        updateCartCountFromBackend(userId);
+      });
+    }
+  });
+
     await includeHTML("footer", `${prefix}partials/footer.html`);
 
     // Wichtige Skripte nachladen
@@ -73,11 +83,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       img.src = prefix + src;
     }
   });
-
-  // Falls vorhanden: Warenkorb-Zähler aktualisieren
-  if (typeof updateCartCount === "function") {
-    updateCartCount();
-  }
 });
 
 // Hilfsfunktionen
