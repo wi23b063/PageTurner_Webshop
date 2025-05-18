@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error('Error fetching user data:', error);
   }
 
-  // Delegated event listener for Cancel buttons
+  // Delegated event listener for Cancel buttons AND Print Invoice buttons
   document.querySelector("#ordersTable").addEventListener("click", function (e) {
     if (e.target.classList.contains("cancel-order")) {
       const orderId = e.target.getAttribute("data-id");
@@ -49,6 +49,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
       }
     }
+    
+    // Neu: Rechnung drucken
+    if (e.target.classList.contains("print-invoice")) {
+      const orderId = e.target.getAttribute("data-id");
+      printInvoice(orderId);
+    }
   });
 });
 
@@ -59,7 +65,7 @@ function loadUserOrders(userId) {
       if (!Array.isArray(data)) {
         console.error("Unexpected response:", data);
         document.querySelector("#ordersTable tbody").innerHTML =
-          `<tr><td colspan="5">Failed to load orders: ${data.error || 'Unknown error'}</td></tr>`;
+          `<tr><td colspan="6">Failed to load orders: ${data.error || 'Unknown error'}</td></tr>`;
         return;
       }
 
@@ -79,6 +85,9 @@ function loadUserOrders(userId) {
               ? `<button class="cancel-order" data-id="${order.order_id}">Cancel</button>`
               : "—"}
           </td>
+          <td>
+            <button class="print-invoice" data-id="${order.order_id}">Print Invoice</button>
+          </td>
         `;
 
         tbody.appendChild(row);
@@ -87,4 +96,68 @@ function loadUserOrders(userId) {
     .catch(err => {
       console.error("Error loading orders:", err);
     });
+}
+
+// Rechnung drucken Funktion (neues Fenster)
+async function printInvoice(orderId) {
+  try {
+    const resp = await fetch(`../../backend/order_api.php?order_id=${orderId}&invoice=1`);
+    if (!resp.ok) {
+      alert("Invoice could not be loaded.");
+      return;
+    }
+    const invoice = await resp.json();
+
+    const win = window.open("", "_blank");
+    win.document.write(`
+      <html>
+      <head>
+        <title>Rechnung ${invoice.invoice_number}</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+          th, td { border: 1px solid #ccc; padding: 8px; }
+          th { background: #eee; }
+          @media print {
+            button { display: none; }
+          }
+        </style>
+      </head>
+      <body>
+        <h1>Invoice</h1>
+        <p><strong>Invoice Number:</strong> ${invoice.invoice_number}</p>
+        <p><strong>Order Date:</strong> ${new Date(invoice.order_date).toLocaleDateString()}</p>
+        <p><strong>Delivery Address:</strong> ${invoice.delivery_address}</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Amount</th>
+              <th>Unit Price</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${invoice.items.map(i => `
+              <tr>
+                <td>${i.product_name}</td>
+                <td>${i.quantity}</td>
+                <td>€${parseFloat(i.price).toFixed(2)}</td>
+                <td>€${(parseFloat(i.price) * i.quantity).toFixed(2)}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+
+        <h3>Total Amount: €${parseFloat(invoice.total_amount).toFixed(2)}</h3>
+
+        <button onclick="window.print()">Print Invoice</button>
+      </body>
+      </html>
+    `);
+    win.document.close();
+  } catch (error) {
+    console.error("Error printing invoice:", error);
+    alert("Error while creating the invoice.");
+  }
 }
