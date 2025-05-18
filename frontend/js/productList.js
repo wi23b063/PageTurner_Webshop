@@ -142,29 +142,32 @@ function renderSearchResults(products, backendPath) {
   resultBox.innerHTML = "";
 
   if (!Array.isArray(products) || products.length === 0) {
-    resultBox.innerHTML = "<div class='search-item'>No matching products found.</div>";
+    resultBox.innerHTML = '<li class="list-group-item text-muted">No matching products found.</li>';
     return;
   }
 
   products.forEach(p => {
-    const div = document.createElement("div");
-    div.classList.add("search-item");
+    const item = document.createElement("li");
+    item.className = "list-group-item d-flex align-items-center gap-3";
 
-    // ❌ No image – only name and price
-    div.innerHTML = `
-      <div>
+    item.innerHTML = `
+      <img src="${backendPath}/productpictures/${p.image_url}" alt="${p.product_name}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+      <div class="flex-grow-1">
         <strong>${p.product_name}</strong><br>
-        €${parseFloat(p.price).toFixed(2)}
+        <small>€${parseFloat(p.price).toFixed(2)}</small>
       </div>
+      <button class="btn btn-sm btn-outline-primary" onclick="addToCart(${p.id}); event.stopPropagation();">🛒</button>
     `;
 
-    div.addEventListener("click", () => {
+    item.addEventListener("click", () => {
       document.getElementById("searchInput").value = p.product_name;
       resultBox.innerHTML = "";
       loadProducts(p.product_name, null, backendPath);
     });
 
-    resultBox.appendChild(div);
+    resultBox.appendChild(item);
   });
 }
+
+
 
