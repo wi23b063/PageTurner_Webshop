@@ -61,7 +61,10 @@ function getLoggedInUserId() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  loadCartItems();
+  // Only load cart items if we're on cart.html
+  if (window.location.pathname.endsWith("cart.html")) {
+    loadCartItems();
+  }
 });
 
 

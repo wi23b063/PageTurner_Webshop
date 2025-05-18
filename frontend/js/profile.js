@@ -21,10 +21,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       loadUserOrders(userId);
     } else {
-      console.error("No user found in session");
+      console.error("User not logged in");
     }
   } catch (error) {
-    console.error('Error fetching session data:', error);
+    console.error('Error fetching user data:', error);
   }
 
   // Delegated event listener for Cancel buttons
