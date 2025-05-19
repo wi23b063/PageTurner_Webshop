@@ -1,9 +1,9 @@
 <?php
 header('Content-Type: application/json');
-require_once 'logic/createOrder.php';
 require_once 'inc/dbaccess.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
+$conn = getDbConnection();
 
 switch ($method) {
 case 'GET':
@@ -43,10 +43,51 @@ case 'GET':
         $row['products'] = $products;
         $orders[] = $row;
     }
-
     echo json_encode($orders);
     break;
 
+        // Rechnung abrufen: /order_api.php?order_id=456&invoice=1
+        if (isset($_GET['order_id']) && isset($_GET['invoice'])) {
+            $order_id = intval($_GET['order_id']);
+            
+            // Bestellung + User-Adresse + Artikel laden (mit Sicherheitscheck)
+            $stmt = $conn->prepare("
+                SELECT o.order_id, o.order_date, o.total_amount, u.address, u.postal_code, u.city
+                FROM orders o
+                JOIN users u ON o.user_id = u.id
+                WHERE o.order_id = ?");
+            $stmt->bind_param("i", $order_id);
+            $stmt->execute();
+            $order = $stmt->get_result()->fetch_assoc();
+
+            if (!$order) {
+                http_response_code(404);
+                echo json_encode(['error' => 'Order not found']);
+                exit;
+            }
+
+            // Artikel laden
+            $stmt = $conn->prepare("
+                SELECT p.product_name, oi.quantity, oi.price
+                FROM order_items oi
+                JOIN products p ON oi.product_id = p.id
+                WHERE oi.order_id = ?");
+            $stmt->bind_param("i", $order_id);
+            $stmt->execute();
+            $items = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+            // Rechnungsnummer generieren
+            $invoice_number = "INV-" . $order['order_id'] . "-" . date('Ymd', strtotime($order['order_date']));
+
+            echo json_encode([
+                'invoice_number' => $invoice_number,
+                'order_date' => $order['order_date'],
+                'delivery_address' => $order['address'] . ', ' . $order['postal_code'] . ' ' . $order['city'],
+                'items' => $items,
+                'total_amount' => $order['total_amount']
+            ]);
+            exit;
+        }
 
     case 'POST':
         $input = json_decode(file_get_contents("php://input"), true);

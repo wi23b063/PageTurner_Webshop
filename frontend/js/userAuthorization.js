@@ -186,14 +186,19 @@ if (logoutBtn) {
   logoutBtn.addEventListener("click", function () {
     setCookie("rememberedLogin", "", -1); // Cookie löschen
 
-    let prefix = "";
-    const path = window.location.pathname;
+    fetch("../backend/api.php?logout")
+      .then(() => {
+        let prefix = "";
+        const path = window.location.pathname;
 
-    if (path.includes("/sites/") || path.includes("/admin/")) {
-      prefix = "../"; // Eine Ebene zurück auf frontend/
-    }
+        if (path.includes("/sites/") || path.includes("/admin/")) {
+          prefix = "../";
+        }
 
-    window.location.href = prefix + "index.html?logout=true";
+        // Danach zurück zur Startseite
+        window.location.href = prefix + "index.html?logout=true";
+      });
   });
 }
+
 
