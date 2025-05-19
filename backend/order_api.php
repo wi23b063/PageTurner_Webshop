@@ -1,17 +1,24 @@
 <?php
 header('Content-Type: application/json');
 require_once 'inc/dbaccess.php';
+require_once __DIR__ . '/logic/createOrder.php';
+
+require_once __DIR__ . '/models/voucher.class.php';
+
+
+
+
+
 
 $method = $_SERVER['REQUEST_METHOD'];
 $conn = getDbConnection();
 
 switch ($method) {
     case 'GET':
-        // Rechnung abrufen: /order_api.php?order_id=456&invoice=1
+        // Rechnung abrufen
         if (isset($_GET['order_id']) && isset($_GET['invoice'])) {
             $order_id = intval($_GET['order_id']);
-            
-            // Bestellung + User-Adresse + Artikel laden (mit Sicherheitscheck)
+
             $stmt = $conn->prepare("
                 SELECT o.order_id, o.order_date, o.total_amount, u.address, u.postal_code, u.city
                 FROM orders o
@@ -27,7 +34,6 @@ switch ($method) {
                 exit;
             }
 
-            // Artikel laden
             $stmt = $conn->prepare("
                 SELECT p.product_name, oi.quantity, oi.price
                 FROM order_items oi
@@ -37,7 +43,6 @@ switch ($method) {
             $stmt->execute();
             $items = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
-            // Rechnungsnummer generieren
             $invoice_number = "INV-" . $order['order_id'] . "-" . date('Ymd', strtotime($order['order_date']));
 
             echo json_encode([
@@ -50,7 +55,7 @@ switch ($method) {
             exit;
         }
 
-        // Bestellungsliste: /order_api.php?user_id=123
+        // Bestellungsliste für User
         if (isset($_GET['user_id'])) {
             $user_id = intval($_GET['user_id']);
             $stmt = $conn->prepare("SELECT order_id, order_date, total_amount, status FROM orders WHERE user_id = ? ORDER BY order_date ASC");
@@ -67,20 +72,21 @@ switch ($method) {
     case 'POST':
         $input = json_decode(file_get_contents("php://input"), true);
 
-        // Case 1: Neue Bestellung aufgeben
+        // Neue Bestellung
         if (isset($input['user_id']) && !isset($input['order_id'])) {
             $user_id = intval($input['user_id']);
-            $result = createOrder($user_id);
+            $coupon_code = $input['coupon_code'] ?? null;
+            $payment_method = $input['payment_method'] ?? null;
+
+            $result = createOrder($user_id, $coupon_code, $payment_method);
             echo json_encode($result);
             exit;
         }
 
-        // Case 2: Bestellung stornieren
+        // Bestellung stornieren
         if (isset($input['order_id'])) {
             $order_id = intval($input['order_id']);
-            $conn = getDbConnection();
 
-            // Sicherheitsabfrage: Bestellung darf nur vom Besitzer storniert werden
             $stmt = $conn->prepare("SELECT user_id, status FROM orders WHERE order_id = ?");
             $stmt->bind_param("i", $order_id);
             $stmt->execute();
@@ -97,7 +103,6 @@ switch ($method) {
                 exit;
             }
 
-            // Bestellung stornieren
             $stmt = $conn->prepare("UPDATE orders SET status = 'Cancelled' WHERE order_id = ?");
             $stmt->bind_param("i", $order_id);
             $stmt->execute();
