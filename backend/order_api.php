@@ -4,6 +4,7 @@ require_once 'inc/dbaccess.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 $conn = getDbConnection();
+$conn = getDbConnection();
 
 switch ($method) {
 case 'GET':
@@ -86,7 +87,6 @@ case 'GET':
         $row['products'] = $products;
         $orders[] = $row;
     }
-
     echo json_encode($orders);
     break;
 

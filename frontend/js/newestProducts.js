@@ -19,8 +19,9 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="product">
             <h3>${p.product_name}</h3>
             <img src="../backend/productpictures/${p.image_url}" alt="${p.product_name}" />
-            <p><strong>price:</strong> €${parseFloat(p.price).toFixed(2)}</p>
-            <p><strong>rating:</strong> ${ratingStars}</p>
+            <p><strong>Price:</strong> €${parseFloat(p.price).toFixed(2)}</p>
+            <p><strong>Rating:</strong> ${ratingStars}</p>
+            <button class="button" onclick="addToCart(${p.id})">🛒 Add to cart</button>
           </div>
         `;
       });
