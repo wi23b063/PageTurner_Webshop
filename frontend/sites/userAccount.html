@@ -6,8 +6,38 @@
   <link rel="stylesheet" href="../res/css/style.css" />
   <link rel="stylesheet" href="../res/css/form_style.css">
   <script src="../js/includeParts.js"></script>
+
   <title>My Profile</title>
+
+  <style>
+  .order-details {
+    background-color: #f9f9f9;
+    font-size: 0.95em;
+  }
+  .order-details ul {
+    margin: 0;
+    padding-left: 1.2em;
+  }
+
+  .products-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+
+  .products-table th,
+  .products-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+
+  .products-table th {
+    background-color: #f4f4f4;
+  }
+
+  </style>
 </head>
+
 <body>
     <header></header>
 
@@ -23,11 +53,7 @@
     <label>Postal Code: <input type="text" id="postal_code" /></label><br />
 
     <br>
-    
-    <!-- New field for old password -->
     <label>Current Password: <input type="password" id="current_password" placeholder="Enter your current password" required /></label><br />
-    
-    <!-- Password field to change password -->
     <label>New Password: <input type="password" id="password" placeholder="Enter new password" /></label><br />
 
     <button type="submit">Update Profile</button>
@@ -42,7 +68,7 @@
         <th>Date</th>
         <th>Total</th>
         <th>Status</th>
-        <th>Action</th>
+        <th>Action / Details</th>
         <th>Invoice</th>
       </tr>
     </thead>
