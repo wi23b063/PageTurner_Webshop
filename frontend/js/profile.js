@@ -67,24 +67,83 @@ function loadUserOrders(userId) {
       tbody.innerHTML = "";
 
       data.forEach(order => {
-        const row = document.createElement("tr");
+        const orderRow = document.createElement("tr");
+        orderRow.classList.add("order-row");
 
-        row.innerHTML = `
+        orderRow.innerHTML = `
           <td>${order.order_id}</td>
           <td>${new Date(order.order_date).toLocaleDateString()}</td>
           <td>€${parseFloat(order.total_amount).toFixed(2)}</td>
           <td>${order.status || "Pending"}</td>
           <td>
-            ${order.status === "Pending"
-              ? `<button class="cancel-order" data-id="${order.order_id}">Cancel</button>`
-              : "—"}
+            ${order.status === "Pending" 
+              ? `<button class="cancel-order" data-id="${order.order_id}">Cancel</button>` 
+              : ""}
+            <button class="toggle-details">View Details</button>
           </td>
         `;
 
-        tbody.appendChild(row);
+        const detailsRow = document.createElement("tr");
+        detailsRow.classList.add("details-row");
+        detailsRow.style.display = "none";
+
+        const productRows = (order.products || []).map(p =>
+          `<tr><td>${p.name}</td><td>${p.quantity}</td><td>€${parseFloat(p.price).toFixed(2)}</td></tr>`
+        ).join("");
+
+        detailsRow.innerHTML = `
+          <td colspan="5">
+            <strong>Products in this order:</strong>
+            <table class="products-table">
+              <thead>
+                <tr><th>Name</th><th>Quantity</th><th>Price</th></tr>
+              </thead>
+              <tbody>${productRows}</tbody>
+            </table>
+          </td>
+        `;
+
+        tbody.appendChild(orderRow);
+        tbody.appendChild(detailsRow);
       });
     })
     .catch(err => {
       console.error("Error loading orders:", err);
     });
+
+
+document.querySelector("#ordersTable").addEventListener("click", function (e) {
+  if (e.target.classList.contains("toggle-details")) {
+    const orderRow = e.target.closest("tr");
+    const detailsRow = orderRow?.nextElementSibling;
+
+    if (detailsRow && detailsRow.classList.contains("details-row")) {
+      const isVisible = detailsRow.style.display !== "none";
+      detailsRow.style.display = isVisible ? "none" : "table-row";
+      e.target.textContent = isVisible ? "View Details" : "Hide Details";
+    }
+  }
+
+  if (e.target.classList.contains("cancel-order")) {
+    const orderId = e.target.getAttribute("data-id");
+
+    if (confirm("Cancel this order?")) {
+      fetch("../../backend/order_api.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ order_id: orderId })
+      })
+      .then(res => res.json())
+      .then(result => {
+        if (result.success) {
+          alert("Order cancelled.");
+          loadUserOrders(userId);
+        } else {
+          alert("Cancel failed: " + result.error);
+        }
+      });
+    }
+  }
+});
+
 }

@@ -6,28 +6,47 @@ require_once 'inc/dbaccess.php';
 $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
-    case 'GET':
-        // GET /order_api.php?user_id=123
-        if (!isset($_GET['user_id'])) {
-            echo json_encode(['success' => false, 'error' => 'Missing user_id']);
-            exit;
+case 'GET':
+    if (!isset($_GET['user_id'])) {
+        echo json_encode(['success' => false, 'error' => 'Missing user_id']);
+        exit;
+    }
+
+    $user_id = intval($_GET['user_id']);
+    $conn = getDbConnection();
+
+    $stmt = $conn->prepare("SELECT order_id, order_date, total_amount, status FROM orders WHERE user_id = ? ORDER BY order_date DESC");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $orders = [];
+    while ($row = $result->fetch_assoc()) {
+        $order_id = $row['order_id'];
+
+        // Fetch items/products for this order
+        $itemStmt = $conn->prepare("
+            SELECT p.product_name AS name, oi.quantity, oi.price
+            FROM order_items oi
+            JOIN products p ON oi.product_id = p.id
+            WHERE oi.order_id = ?
+        ");
+        $itemStmt->bind_param("i", $order_id);
+        $itemStmt->execute();
+        $itemResult = $itemStmt->get_result();
+
+        $products = [];
+        while ($item = $itemResult->fetch_assoc()) {
+            $products[] = $item;
         }
 
-        $user_id = intval($_GET['user_id']);
-        $conn = getDbConnection();
+        $row['products'] = $products;
+        $orders[] = $row;
+    }
 
-        $stmt = $conn->prepare("SELECT order_id, order_date, total_amount, status FROM orders WHERE user_id = ? ORDER BY order_date DESC");
-        $stmt->bind_param("i", $user_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    echo json_encode($orders);
+    break;
 
-        $orders = [];
-        while ($row = $result->fetch_assoc()) {
-            $orders[] = $row;
-        }
-
-        echo json_encode($orders);
-        break;
 
     case 'POST':
         $input = json_decode(file_get_contents("php://input"), true);
