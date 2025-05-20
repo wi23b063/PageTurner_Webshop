@@ -16,7 +16,7 @@
   </header>
  
   <main class="container my-5">
-    <h1 class="text-center mb-4">Produktverwaltung</h1>
+    <h1 class="text-center mb-4">Product Management</h1>
 
     <!--Ein Button für erstellen eines neuen Produkts-->
     <div class="d-flex justify-content-end mb-3">
@@ -25,39 +25,39 @@
 
     <!--Versteckte Produktformular für das erstellen eines neuen Produkts -->
     <div id="create-product-form" class="card p-4" style="display: none;">
-      <h3>Neues Produkt erstellen</h3>
+      <h3>Create New Product</h3>
       <form id="newProductForm" enctype="multipart/form-data">
         <div class="mb-3">
-          <label for="productName" class="form-label">Produktname</label>
+          <label for="productName" class="form-label">Product Name</label>
           <input type="text" class="form-control" id="productName" required>
         </div>
         <div class="mb-3">
-          <label for="productDescription" class="form-label">Beschreibung</label>
+          <label for="productDescription" class="form-label">Description</label>
           <textarea class="form-control" id="productDescription" required></textarea>
         </div>
         <div class="mb-3">
-          <label for="productPrice" class="form-label">Preis (€)</label>
+          <label for="productPrice" class="form-label">Price (€)</label>
           <input type="number" step="0.01" class="form-control" id="productPrice" required>
         </div>
         <div class="mb-3">
-          <label for="productRating" class="form-label">Bewertung (0-5)</label>
+          <label for="productRating" class="form-label">Rating (0-5)</label>
           <input type="number" step="0.1" max="5" min="0" class="form-control" id="productRating" required>
         </div>
         <div class="mb-3">
-          <label for="productImage" class="form-label">Bild</label>
+          <label for="productImage" class="form-label">Image</label>
           <input type="file" class="form-control" id="productImage" accept="image/*">
         </div>
         
         <div class="mb-3">
-          <label for="productCategory" class="form-label">Kategorie</label>
+          <label for="productCategory" class="form-label">Category</label>
           <select class="form-select" id="productCategory" required>
-            <option value="">Bitte wählen</option>
+            <option value="">Select a category</option>
             <!-- Wird per JS befüllt -->
           </select>
         </div>
         
-        <button type="submit" class="btn btn-success">Produkt speichern</button>
-        <button type="button" class="btn btn-secondary" onclick="hideCreateProductForm()">Abbrechen</button>
+        <button type="submit" class="btn btn-success">Save Product</button>
+        <button type="button" class="btn btn-secondary" onclick="hideCreateProductForm()">Cancel</button>
       </form>
     </div>
     

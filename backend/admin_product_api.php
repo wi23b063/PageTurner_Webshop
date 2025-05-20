@@ -70,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_GET["updateProduct"])) {
             }
 
             $stmt = $conn->prepare("UPDATE products SET product_name = ?, description = ?, price = ?, rating = ?, image_url = ?, category_id = ? WHERE id = ?");
-            $stmt->bind_param("ssds sii", $productName, $description, $price, $rating, $filename, $categoryId, $id);
+            $stmt->bind_param("ssdsdii", $productName, $description, $price, $rating, $filename, $categoryId, $id);
         } else {
             $stmt = $conn->prepare("UPDATE products SET product_name = ?, description = ?, price = ?, rating = ?, category_id = ? WHERE id = ?");
             $stmt->bind_param("ssdsii", $productName, $description, $price, $rating, $categoryId, $id);
@@ -109,9 +109,16 @@ if ($_SERVER["REQUEST_METHOD"] === "DELETE" && isset($_GET["deleteProduct"])) {
 // Produkt erstellen (POST)
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_GET["createProduct"])) {
     try {
-        if (!isset($_POST['productName'], $_POST['productDescription'], $_POST['productPrice'], $_POST['productRating'], $_POST['productCategory'], $_FILES['productImage'])) {
-            throw new Exception("Fehlende Daten für das Erstellen eines Produkts.");
+        $requiredFields = ['productName', 'productDescription', 'productPrice', 'productRating', 'productCategory'];
+        foreach ($requiredFields as $field) {
+            if (!isset($_POST[$field])) {
+                throw new Exception("Fehlendes Feld: $field");
+            }
         }
+        if (!isset($_FILES['productImage']) || $_FILES['productImage']['error'] !== UPLOAD_ERR_OK) {
+            throw new Exception("Bild nicht hochgeladen oder fehlerhaft.");
+        }
+
 
         $productName = $_POST['productName'];
         $description = $_POST['productDescription'];
