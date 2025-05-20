@@ -95,8 +95,8 @@ class UserService {
             return $response;
         }
 
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
-        $stmt->bind_param("s", $username);
+        $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
+        $stmt->bind_param("ss", $username, $username);
         $stmt->execute();
 
         $result = $stmt->get_result();
