@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            alert(isEditing ? "Produkt aktualisiert" : "Neues Produkt erstellt");
+            alert(isEditing ? "Product updated" : "New Product created");
             hideCreateProductForm();
             loadProducts();
           } else {
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(err => {
           console.error("Netzwerkfehler:", err);
-          alert("Netzwerkfehler beim Senden der Daten!");
+          alert("Network Error while sennding product");
         });
     });
   }
@@ -53,7 +53,7 @@ function loadCategories() {
     .then(categories => {
       const select = document.getElementById("productCategory");
       if (!select) return;
-      select.innerHTML = '<option value="">Bitte wählen</option>';
+      select.innerHTML = '<option value="">Select a Category</option>';
       categories.forEach(cat => {
         const option = document.createElement("option");
         option.value = cat.id;

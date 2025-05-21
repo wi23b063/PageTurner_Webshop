@@ -49,7 +49,7 @@ function createProduct($name, $description, $price, $rating, $imageFilename, $ca
     $conn = getDbConnection();
 
     $stmt = $conn->prepare("INSERT INTO products (product_name, description, price, rating, image_url, category_id) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssds si", $name, $description, $price, $rating, $imageFilename, $categoryId);
+    $stmt->bind_param("ssdssi", $name, $description, $price, $rating, $imageFilename, $categoryId);
 
 
     if (!$stmt->execute()) {
