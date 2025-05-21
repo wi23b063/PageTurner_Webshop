@@ -15,7 +15,7 @@ function getProducts($search = "", $categoryId = null) {
         $sql .= " AND p.product_name LIKE '%$searchEscaped%'";
     }
 
-    if (!empty($categoryId)) {
+    if (!empty($categoryId)&& $categoryId !== "") {
         $categoryId = intval($categoryId);
         $sql .= " AND p.category_id = $categoryId";
     }

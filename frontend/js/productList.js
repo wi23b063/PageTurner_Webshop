@@ -48,7 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       selectedCategory = e.target.dataset.id || null;
       const search = searchInput?.value.trim() ?? "";
-      liveSearchBox.innerHTML = "";
+      if (liveSearchBox) liveSearchBox.innerHTML = "";
+
       loadProducts(search, selectedCategory, backendPath);
     }
   });
@@ -94,7 +95,7 @@ function loadProducts(search = "", categoryId = null, backendPath) {
   urlParams.set("products", "1");
 
   if (search) urlParams.set("search", search);
-  if (categoryId) urlParams.set("category_id", categoryId);
+  if (categoryId !== null && categoryId !== "") urlParams.set("category_id", categoryId);
 
   const url = `${backendPath}/product_api.php?${urlParams.toString()}`;
 
