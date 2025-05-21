@@ -72,50 +72,53 @@ if (registerForm) {
 }
 
 
-// LOGIN
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
-  loginForm.addEventListener("submit", function(event) {
+  loginForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
-    const messageDiv = document.getElementById("error_message");
-    document.querySelectorAll(".error").forEach(el => el.textContent = "");
-    if (messageDiv) messageDiv.style.display = "none";
+    const messageDiv = document.getElementById("message"); // Use same message container
+    messageDiv.innerHTML = "";
+    messageDiv.className = "";
 
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value.trim();
+
+    let hasError = false;
     if (!username || !password) {
-      if (!username) document.getElementById("username_error").textContent = "Bitte Benutzernamen eingeben.";
-      if (!password) document.getElementById("password_error").textContent = "Bitte Passwort eingeben.";
-      return;
+      let errorMsg = "";
+      if (!username) errorMsg += "Bitte Benutzernamen eingeben.<br>";
+      if (!password) errorMsg += "Bitte Passwort eingeben.";
+      messageDiv.innerHTML = errorMsg;
+      messageDiv.className = "error-message";
+      hasError = true;
     }
+
+    if (hasError) return;
 
     fetch("../../backend/api.php?login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password })
     })
-    .then(res => res.json())
-    .then(data => {
-      if (data.error) {
-        if (messageDiv) {
-          messageDiv.textContent = data.error;
-          messageDiv.style.display = "block";
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          messageDiv.innerHTML = data.error;
+          messageDiv.className = "error-message";
+        } else {
+          const rememberedUser = { username, role: data.user.role || "user" };
+          setCookie("rememberedLogin", JSON.stringify(rememberedUser), 30);
+          window.location.href = data.user.role === "admin" ? "../adminPanel.html" : "../index.html";
         }
-      } else {
-        const rememberedUser = { username, role: data.user.role || "user" };
-        setCookie("rememberedLogin", JSON.stringify(rememberedUser), 30);
-        window.location.href = data.user.role === "admin" ? "../adminPanel.html" : "../index.html";
-      }
-    })
-    .catch(() => {
-      if (messageDiv) {
-        messageDiv.textContent = "An Error occurred while trying to login.";
-        messageDiv.style.display = "block";
-      }
-    });
+      })
+      .catch(() => {
+        messageDiv.innerHTML = "An error occurred while trying to login.";
+        messageDiv.className = "error-message";
+      });
   });
 }
+
 
 
 // LOGIN MERKEN – Cookie Utils
