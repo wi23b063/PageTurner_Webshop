@@ -11,21 +11,17 @@
 <body>
     <header></header>
 
-    <form id="loginForm" novalidate>  
+    <form id="loginForm">  
         <h2 style="padding-left:40px; padding-top: 20px;" class="pb-2 border-bottom">Login</h2>
 
-        <div id="error_message" class="alert alert-danger" style="display:none;"></div>
-
         <div class="form-group">
-            <label for="username">Username or Password:</label>
+            <label for="username">Username or Email:</label>
             <input type="text" id="username" name="username" required>
-            <span class="error" id="username_error"></span>
         </div>
 
         <div class="form-group">
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
-            <span class="error" id="password_error"></span>
         </div>
 
         <label class="checkbox-label">
@@ -33,8 +29,8 @@
         Remember Login
         </label>
 
-
-            <button type="submit" class="button">Submit</button>
+        <div id="message" class=""></div>
+        <button type="submit" class="button">Submit</button>
         </div>
 
         <br><br>
